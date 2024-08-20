@@ -20,7 +20,7 @@
         </div>
 		<footer class="footer">
 			<div class="container">
-				<p class="text-muted">© GSB 2024 🥇</p>
+				<p class="text-muted">© GSB 2025</p>
 			</div>
 		</footer>
     </body>
