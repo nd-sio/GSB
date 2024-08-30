@@ -1,28 +1,14 @@
 <?php
 
-/**
- * Vue Liste des frais au forfait
- *
- * PHP Version 8
- *
- * @category  PPE
- * @package   GSB
- * @author    Réseau CERTA <contact@reseaucerta.org>
- * @author    José GIL <jgil@ac-nice.fr>
- * @copyright 2017 Réseau CERTA
- * @license   Réseau CERTA
- * @version   GIT: <0>
- * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
- * @link      https://getbootstrap.com/docs/3.3/ Documentation Bootstrap v3
+/* 
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
  */
 
 ?>
-<div class="visiteur">
-    
-</div>
 
 <div class="row">    
-    <h2>Valider la fiche de frais
+    <h2>Renseigner ma fiche de frais du mois 
         <?php echo $numMois . '-' . $numAnnee ?>
     </h2>
     <h3>Eléments forfaitisés</h3>
@@ -44,7 +30,6 @@
                                value="<?php echo $quantite ?>" 
                                class="form-control">
                     </div>
-                    
                     <?php
                 }
                 ?>

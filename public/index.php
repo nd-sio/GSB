@@ -52,9 +52,15 @@ switch ($uc) {
     case 'deconnexion':
         include PATH_CTRLS . 'c_deconnexion.php';
         break;
+    case 'validerFicheFrais':
+        include PATH_CTRLS . 'c_validerFicheFrais';
     default:
         Utilitaires::ajouterErreur('Page non trouvée, veuillez vérifier votre lien...');
         include PATH_VIEWS . 'v_erreurs.php';
         break;
 }
+
+// probably a new switch for the feature of user = comptable 
+// switch()
+
 require PATH_VIEWS . 'v_pied.php';
