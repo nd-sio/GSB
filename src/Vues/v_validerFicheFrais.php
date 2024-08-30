@@ -14,7 +14,7 @@
     <h3>Eléments forfaitisés</h3>
     <div class="col-md-4">
         <form method="post" 
-              action="index.php?uc=gererFrais&action=validerMajFraisForfait" 
+              action="index.php?uc=validerFicheFrais&action=saisirFrais" 
               role="form">
             <fieldset>       
                 <?php
@@ -24,7 +24,31 @@
                     $quantite = $unFrais['quantite']; ?>
                     <div class="form-group">
                         <label for="idFrais"><?php echo $libelle ?></label>
-                        <input type="text" id="idFrais" 
+                        <input type="number" id="idFrais" 
+                               name="lesFrais[<?php echo $idFrais ?>]"
+                               size="10" maxlength="5" 
+                               value="<?php echo $quantite ?>" 
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="idFrais"><?php echo $libelle ?></label>
+                        <input type="number" id="idFrais" 
+                               name="lesFrais[<?php echo $idFrais ?>]"
+                               size="10" maxlength="5" 
+                               value="<?php echo $quantite ?>" 
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="idFrais"><?php echo $libelle ?></label>
+                        <input type="number" id="idFrais" 
+                               name="lesFrais[<?php echo $idFrais ?>]"
+                               size="10" maxlength="5" 
+                               value="<?php echo $quantite ?>" 
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="idFrais"><?php echo $libelle ?></label>
+                        <input type="number" id="idFrais" 
                                name="lesFrais[<?php echo $idFrais ?>]"
                                size="10" maxlength="5" 
                                value="<?php echo $quantite ?>" 
