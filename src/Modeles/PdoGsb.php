@@ -91,18 +91,21 @@ class PdoGsb
      * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
      */
     public function getInfosVisiteur($login, $mdp): array
-    {
-        $requetePrepare = $this->connexion->prepare(
-            'SELECT visiteur.id AS id, visiteur.nom AS nom, '
-            . 'visiteur.prenom AS prenom '
-            . 'FROM visiteur '
-            . 'WHERE visiteur.login = :unLogin AND visiteur.mdp = :unMdp'
-        );
-        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-        $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
-        $requetePrepare->execute();
-        return $requetePrepare->fetch();
-    }
+{
+    $requetePrepare = $this->connexion->prepare(
+        'SELECT visiteur.id AS id, visiteur.nom AS nom, '
+        . 'visiteur.prenom AS prenom '
+        . 'FROM visiteur '
+        . 'WHERE visiteur.login = :unLogin AND visiteur.mdp = :unMdp'
+    );
+    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+    $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
+    $requetePrepare->execute();
+
+    $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
+    return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
+}
+
     
     /**
      * Retourne les informations d'un comptable
@@ -113,19 +116,22 @@ class PdoGsb
      * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
      */
     public function getInfosComptable($login, $mdp): array
-    {
-        $requetePrepare = $this->connexion->prepare(
-             'SELECT visiteur.id AS id, visiteur.nom AS nom, '
-            . 'visiteur.prenom AS prenom '
-            . 'FROM visiteur '
-            . 'WHERE visiteur.login = :unLogin AND visiteur.mdp = :unMdp'
-            
-        );
-        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-        $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
-        $requetePrepare->execute();
-        return $requetePrepare->fetch();
-    }
+{
+    $requetePrepare = $this->connexion->prepare(
+        'SELECT comptable.id AS id, comptable.nom AS nom, '
+        . 'comptable.prenom AS prenom '
+        . 'FROM comptable '
+        . 'WHERE comptable.login = :unLogin AND comptable.mdp = :unMdp'
+    );
+    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+    $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
+    $requetePrepare->execute();
+
+    // Retourner un tableau vide si aucun résultat n'est trouvé
+    $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
+    return $result ?: [];
+}
+
 
     /**
      * Retourne sous forme d'un tableau associatif toutes les lignes de frais

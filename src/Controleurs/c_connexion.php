@@ -29,26 +29,34 @@ switch ($action) {
     case 'valideConnexion':
         $login = filter_input(INPUT_POST, 'login', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $mdp = filter_input(INPUT_POST, 'mdp', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $comptable = $pdo->getInfosComptable($login, $mdp);
         $visiteur = $pdo->getInfosVisiteur($login, $mdp);
-        $comptable = $pdo->getInfosComptable($login, $mdp);  
-        
-        if (is_array($visiteur)) {
-            $id = $visiteur['id'];
-            $nom = $visiteur['nom'];
-            $prenom = $visiteur['prenom'];
-            Utilitaires::connecter($id, $nom, $prenom);
-            header('Location: index.php');
-        } elseif (is_array($comptable)) {
+
+        if (!empty($comptable)) {
+            // Comptable trouvé
+            $_SESSION['user_type'] = 'comptable';
+            $_SESSION['user_info'] = $comptable;
             $id = $comptable['id'];
             $nom = $comptable['nom'];
             $prenom = $comptable['prenom'];
             Utilitaires::connecter($id, $nom, $prenom);
             header('Location: index.php');
+        } elseif (!empty($visiteur)) {
+            // Visiteur trouvé
+            $_SESSION['user_type'] = 'visiteur';
+            $_SESSION['user_info'] = $visiteur;
+            $id = $visiteur['id'];
+            $nom = $visiteur['nom'];
+            $prenom = $visiteur['prenom'];
+            Utilitaires::connecter($id, $nom, $prenom);
+            header('Location: index.php');
         } else {
+            // Ni visiteur ni comptable trouvé
             Utilitaires::ajouterErreur('Login ou mot de passe incorrect');
             include PATH_VIEWS . 'v_erreurs.php';
             include PATH_VIEWS . 'v_connexion.php';
-        }     
+        }
+
         break;
     default:
         include PATH_VIEWS . 'v_connexion.php';
