@@ -30,7 +30,8 @@ switch ($action) {
         $login = filter_input(INPUT_POST, 'login', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $mdp = filter_input(INPUT_POST, 'mdp', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $comptable = $pdo->getInfosComptable($login, $mdp);
-        $visiteur = $pdo->getInfosVisiteur($login, $mdp);
+        if (empty($comptable)) {
+        $visiteur = $pdo->getInfosVisiteur($login, $mdp);}
 
         if (!empty($comptable)) {
             // Comptable trouvé

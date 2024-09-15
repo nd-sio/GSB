@@ -16,6 +16,11 @@
  */
 
 ?>
+<?php
+$userType = $_SESSION['user_type'] ?? '';
+            if ($estConnecte && $userType === 'visiteur') {
+                ?>
+            
 <div class="alert alert-warning" role="alert"><strong>Rappel : </strong>Vos frais sont à déclarer au plus tard le dernier jour du mois 
 	et vos factures acquittées doivent être arrivées aux services comptables au plus tard le 10 du mois suivant la saisie.
 	Les éléments reçus après le 10 seront reportés sur le mois suivant.
@@ -52,3 +57,50 @@
         </div>
     </div>
 </div>
+ <?php
+            } else if ($estConnecte && $userType === 'comptable') {
+                ?>
+    <div id="accueil">
+    <h2>
+        Gestion des frais<small> - Comptable : 
+            <?= $_SESSION['prenom'] . ' ' . $_SESSION['nom'] ?></small>
+    </h2>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-bookmark"></span>
+                    Navigation
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <a href="index.php?uc=gererFrais&action=saisirFrais"
+                           class="btn btn-success btn-lg" role="button">
+                            <span class="glyphicon glyphicon-ok"></span>
+                            <br>Valider les fiches de frais</a>
+                        <a href="index.php?uc=etatFrais&action=selectionnerMois"
+                           class="btn btn-primary btn-lg" role="button">
+                            <span class="glyphicon glyphicon-euro"></span>
+                            <br>Suivre le paiement des fiches de frais</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+            } else {
+                ?>   
+                <h1>
+                    <img src="./images/logo.jpg"
+                         class="img-responsive center-block"
+                         alt="Laboratoire Galaxy-Swiss Bourdin"
+                         title="Laboratoire Galaxy-Swiss Bourdin">
+                </h1>
+                <?php
+            }
+                
