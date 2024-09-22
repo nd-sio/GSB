@@ -19,7 +19,7 @@
 ?>
 <?php
 $userType = $_SESSION['user_type'] ?? '';
-            if ($estConnecte && $userType === 'visiteur') {
+            if ($userType === 'visiteur') {
                 ?>
 <hr>
 <div class="row">
@@ -86,7 +86,7 @@ $userType = $_SESSION['user_type'] ?? '';
     </div>
 </div>
 <?php
-} else if ($estConnecte && $userType === 'comptable') {
+} else {
 ?>
 <hr>
 <div class="row">
@@ -113,10 +113,8 @@ $userType = $_SESSION['user_type'] ?? '';
                     <td> <?php echo $libelle ?></td>
                     <td><?php echo $montant ?></td>
                     <td>
-                        <a href="index.php?uc=gererFrais&action=supprimerFrais&idFrais=<?php echo $id ?>" 
-                           onclick="return confirm('Voulez-vous vraiment supprimer ce frais?');">
-                            Supprimer ce frais
-                        </a>
+                        <button class="btn btn-success" type="submit">Corriger</button>
+                        <button class="btn btn-danger" type="reset">Réinitialiser</button>
                     </td>
                 </tr>
                 <?php
@@ -127,14 +125,6 @@ $userType = $_SESSION['user_type'] ?? '';
     </div>
 </div>
 <?php
-            } else {
-                ?>   
-                <h1>
-                    <img src="./images/logo.jpg"
-                         class="img-responsive center-block"
-                         alt="Laboratoire Galaxy-Swiss Bourdin"
-                         title="Laboratoire Galaxy-Swiss Bourdin">
-                </h1>
-                <?php
             }
+                   
                 

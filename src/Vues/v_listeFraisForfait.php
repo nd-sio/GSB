@@ -20,7 +20,7 @@
 <div class="row"> 
     <?php
 $userType = $_SESSION['user_type'] ?? '';
-            if ($estConnecte && $userType === 'visiteur') {
+            if ($userType === 'visiteur') {
                 ?>
     <h2>Renseigner ma fiche de frais du mois 
         <?php echo $numMois . '-' . $numAnnee ?>
@@ -50,8 +50,19 @@ $userType = $_SESSION['user_type'] ?? '';
                     <?php
                 }
                 ?>
+                <?php 
+                if ($userType === 'visiteur') {
+                    ?>
                 <button class="btn btn-success" type="submit">Ajouter</button>
                 <button class="btn btn-danger" type="reset">Effacer</button>
+                <?php
+                } else {
+                        ?>
+                <button class="btn btn-success" type="submit">Corriger</button>
+                <button class="btn btn-danger" type="reset">Réinitialiser</button>
+                <?php
+                }
+                 ?>
             </fieldset>
         </form>
     </div>

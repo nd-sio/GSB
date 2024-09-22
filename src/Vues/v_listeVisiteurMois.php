@@ -17,13 +17,16 @@
  */
 
 ?>
-    <div class="container">
+
+<link rel="stylesheet" href="../public/styles/style.css">
+
+ <div class="container">
     <form method="post" action="index.php?uc=validerFrais&action=validerFF">
         <div class="row">
             <div class="col-md-6">
                 <div class="d-flex align-items-center">
-                    <label for="lstVisiteurs" class="me-2">Choisir le visiteur :</label>
-                    <select id="lstVisiteurs" name="lstVisiteurs" class="form-control" onchange="this.form.submit()">
+                    <label for="lstVisiteurs" class="me-2 mb-0">Choisir le visiteur :</label>
+                    <select id="lstVisiteurs" name="lstVisiteurs" class="custom-select" onchange="this.form.submit()">
                         <option value="">Commencer par choisir le visiteur</option>
                         <?php foreach ($lesVisiteurs as $unVisiteur) {
                             $idVisiteur = $unVisiteur['id'];
@@ -40,8 +43,8 @@
 
             <div class="col-md-6">
                 <div class="d-flex align-items-center">
-                    <label for="lstMois" class="me-2">Mois :</label>
-                    <select id="lstMois" name="lstMois" class="form-control" onchange="this.form.submit()">
+                    <label for="lstMois" class="me-2 mb-0">Mois :</label>
+                    <select id="lstMois" name="lstMois" class="custom-select" onchange="this.form.submit()">
                         <?php if (!empty($lesMois)) {
                             foreach ($lesMois as $unMois) {
                                 $mois = $unMois['mois'];
@@ -59,6 +62,8 @@
         </div>
     </form>
 </div>
+
+
 
        
     <h2>Valider la fiche de frais</h2>
