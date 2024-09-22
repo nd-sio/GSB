@@ -17,10 +17,17 @@
  */
 
 ?>
-<div class="row">    
+<div class="row"> 
+    <?php
+$userType = $_SESSION['user_type'] ?? '';
+            if ($estConnecte && $userType === 'visiteur') {
+                ?>
     <h2>Renseigner ma fiche de frais du mois 
         <?php echo $numMois . '-' . $numAnnee ?>
     </h2>
+    <?php
+    }
+    ?>
     <h3>Eléments forfaitisés</h3>
     <div class="col-md-4">
         <form method="post" 

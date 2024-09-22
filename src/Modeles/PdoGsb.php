@@ -81,6 +81,22 @@ class PdoGsb
         }
         return self::$instance;
     }
+    
+      /**
+     * Retourne la liste de tous les visiteurs
+     *
+     * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
+     */
+    public function getAllVisiteurs(): array
+{
+    $requetePrepare = $this->connexion->prepare(
+        'SELECT * FROM visiteur '
+    );
+    $requetePrepare->execute();
+
+    $result = $requetePrepare->fetchAll();
+    return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
+}
 
     /**
      * Retourne les informations d'un visiteur
