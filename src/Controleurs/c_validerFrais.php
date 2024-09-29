@@ -17,10 +17,9 @@
 
 use Outils\Utilitaires;
 
-//filter_input(INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
 $lesVisiteurs = $pdo->getAllVisiteurs();
-$idVisiteurSelectionne = filter_input(INPUT_POST, 'lstVisiteurs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+$idVisiteurSelectionne = filter_input(INPUT_GET, 'lstVisiteurs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         if ($idVisiteurSelectionne) {
             $lesMois = $pdo->getLesMoisDisponibles($idVisiteurSelectionne);
             
@@ -31,9 +30,7 @@ $idVisiteurSelectionne = filter_input(INPUT_POST, 'lstVisiteurs', FILTER_SANITIZ
         $moisASelectionner = $lesCles[0];
  }
  
- 
-
-$moisSelectionne = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$moisSelectionne = filter_input(INPUT_GET, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         if ($moisSelectionne) {
         $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($idVisiteurSelectionne, $moisSelectionne);
         $lesFraisForfait = $pdo->getLesFraisForfait($idVisiteurSelectionne, $moisSelectionne);
@@ -41,6 +38,25 @@ $moisSelectionne = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPEC
         $numMois = substr($moisSelectionne, 4, 2);
         
         }
+        
+$action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    
+switch ($action) {   
+    
+    case 'validerMajFraisForfait':
+        $lesFrais = filter_input(INPUT_POST, 'lesFrais', FILTER_DEFAULT, FILTER_FORCE_ARRAY);
+        $mois = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $idVisiteur = filter_input(INPUT_POST, 'lstVisiteurs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        
+        if (Utilitaires::lesQteFraisValides($lesFrais)) {
+            $pdo->majFraisForfait($idVisiteur, $mois, $lesFrais);
+        } else {
+            Utilitaires::ajouterErreur('Les valeurs des frais doivent être numériques');
+            include PATH_VIEWS . 'v_erreurs.php';
+        }
+        break;
+}
+        
 require PATH_VIEWS . 'v_listeVisiteurMois.php';       
 require PATH_VIEWS . 'v_listeFraisForfait.php';
 require PATH_VIEWS . 'v_listeFraisHorsForfait.php';

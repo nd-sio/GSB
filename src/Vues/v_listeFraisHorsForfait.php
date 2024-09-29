@@ -92,38 +92,55 @@ $userType = $_SESSION['user_type'] ?? '';
 <div class="row">
     <div class="panel panel-info">
         <div class="panel-heading">Descriptif des éléments hors forfait</div>
-        <table class="table table-bordered table-responsive">
-            <thead>
-                <tr>
-                    <th class="date">Date</th>
-                    <th class="libelle">Libellé</th>  
-                    <th class="montant">Montant</th>  
-                    <th class="action">&nbsp;</th> 
-                </tr>
-            </thead>  
-            <tbody>
-            <?php
-            foreach ($lesFraisHorsForfait as $unFraisHorsForfait) {
-                $libelle = htmlspecialchars($unFraisHorsForfait['libelle']);
-                $date = $unFraisHorsForfait['date'];
-                $montant = $unFraisHorsForfait['montant'];
-                $id = $unFraisHorsForfait['id']; ?>           
-                <tr>
-                    <td> <?php echo $date ?></td>
-                    <td> <?php echo $libelle ?></td>
-                    <td><?php echo $montant ?></td>
-                    <td>
-                        <button class="btn btn-success" type="submit">Corriger</button>
-                        <button class="btn btn-danger" type="reset">Réinitialiser</button>
-                    </td>
-                </tr>
-                <?php
-            }
-            ?>
-            </tbody>  
-        </table>
+        <form action="index.php?uc=gererFrais&action=validerCreationFrais" method="post" role="form">
+            <table class="table table-bordered table-responsive">
+                <thead>  
+                    <tr>
+                        <th class="date">Date</th>
+                        <th class="libelle">Libellé</th>  
+                        <th class="montant">Montant</th>  
+                        <th class="action">&nbsp;</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($lesFraisHorsForfait as $unFraisHorsForfait) {
+                        $libelle = htmlspecialchars($unFraisHorsForfait['libelle']);
+                        $date = $unFraisHorsForfait['date'];
+                        $montant = $unFraisHorsForfait['montant'];
+                        $id = $unFraisHorsForfait['id']; ?>           
+                        <tr>
+                            <td>
+                                <input type="text" name="dateFrais[<?php echo $id; ?>]" 
+                                       class="form-control" value="<?php echo $date; ?>" />
+                            </td>
+                            <td>
+                                <input type="text" name="libelleFrais[<?php echo $id; ?>]" 
+                                       class="form-control" value="<?php echo $libelle; ?>" />
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    <span class="input-group-addon">€</span>
+                                    <input type="text" name="montantFrais[<?php echo $id; ?>]" 
+                                           class="form-control" value="<?php echo $montant; ?>" />
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" type="submit" name="corriger" value="<?php echo $id; ?>">Corriger</button>
+                                <button class="btn btn-danger" type="reset" name="supprimer" value="<?php echo $id; ?>">Réinitialiser</button>
+                            </td>
+                        </tr>
+                    <?php
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </form>
     </div>
 </div>
+
+<!--nbjustificatif + btn valider et réninit-->
+
 <?php
             }
                    

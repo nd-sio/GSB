@@ -20,8 +20,8 @@
 
 <link rel="stylesheet" href="../public/styles/style.css">
 
- <div class="container">
-    <form method="post" action="index.php?uc=validerFrais&action=validerFF">
+<div class="container">
+    <form method="get" action="index.php?uc=validerFrais">
         <div class="row">
             <div class="col-md-6">
                 <div class="d-flex align-items-center">
@@ -45,6 +45,7 @@
                 <div class="d-flex align-items-center">
                     <label for="lstMois" class="me-2 mb-0">Mois :</label>
                     <select id="lstMois" name="lstMois" class="custom-select" onchange="this.form.submit()">
+                        <option value="">Choisir le mois</option>
                         <?php if (!empty($lesMois)) {
                             foreach ($lesMois as $unMois) {
                                 $mois = $unMois['mois'];
@@ -60,13 +61,13 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" name="uc" value="validerFrais"> <!-- Ajout de l'UC dans l'URL -->
     </form>
 </div>
 
 
 
-       
-    <h2>Valider la fiche de frais</h2>
+   
                 
 
 
