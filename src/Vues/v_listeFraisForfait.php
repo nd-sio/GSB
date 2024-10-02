@@ -22,7 +22,7 @@
 </div>
 
 <div class="row">    
-    <h2>Valider la fiche de frais
+    <h2>Renseigner ma fiche de frais du mois
         <?php echo $numMois . '-' . $numAnnee ?>
     </h2>
     <h3>Eléments forfaitisés</h3>
