@@ -97,9 +97,9 @@ $userType = $_SESSION['user_type'] ?? '';
             }
             ?>
             </fieldset>
+            <!--<input type="hidden" name="uc" value="validerFrais">-->
             <input type="hidden" name="lstVisiteurs" value="<?php echo $idVisiteurSelectionne; ?>">
             <input type="hidden" name="lstMois" value="<?php echo $moisSelectionne; ?>">
-            <input type="hidden" name="uc" value="validerFrais">
         </form>
     </div>
 </div>

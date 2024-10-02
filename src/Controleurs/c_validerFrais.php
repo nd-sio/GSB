@@ -30,7 +30,7 @@ $idVisiteurSelectionne = filter_input(INPUT_GET, 'lstVisiteurs', FILTER_SANITIZE
         $moisASelectionner = $lesCles[0];
  }
  
-$moisSelectionne = filter_input(INPUT_GET, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+ $moisSelectionne = filter_input(INPUT_GET, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         if ($moisSelectionne) {
         $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($idVisiteurSelectionne, $moisSelectionne);
         $lesFraisForfait = $pdo->getLesFraisForfait($idVisiteurSelectionne, $moisSelectionne);
@@ -50,13 +50,29 @@ switch ($action) {
         
         if (Utilitaires::lesQteFraisValides($lesFrais)) {
             $pdo->majFraisForfait($idVisiteur, $mois, $lesFrais);
+            header('Location: index.php?lstVisiteurs=' . urlencode($idVisiteur) . '&lstMois=' . urlencode($mois) . '&uc=validerFrais');
         } else {
             Utilitaires::ajouterErreur('Les valeurs des frais doivent être numériques');
             include PATH_VIEWS . 'v_erreurs.php';
         }
         break;
-}
         
+    case 'validerMajFraisHorsForfait':
+        $lesFraisHorsForfait[$id] = ['date' => $date, 'libelle' => $libelle, 'montant' => $montant];
+        var_dump($lesFraisHorsForfait);
+        if (Utilitaires::valideInfosFrais($date, $libelle, $montant)) {
+            $pdo->majFraisHorsForfait($idVisiteur, $mois, $lesFraisHorsForfait);
+        } else {
+            Utilitaires::ajouterErreur('Les valeurs des frais sont invalides');
+            include PATH_VIEWS . 'v_erreurs.php';
+        }
+        break;
+        
+//    case 'validerFicheFrais':
+//        $pdo->majEtatFicheFrais($idVisiteur, $mois, $etat)
+        
+}
+      
 require PATH_VIEWS . 'v_listeVisiteurMois.php';       
 require PATH_VIEWS . 'v_listeFraisForfait.php';
 require PATH_VIEWS . 'v_listeFraisHorsForfait.php';

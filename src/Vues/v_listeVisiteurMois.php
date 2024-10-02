@@ -28,7 +28,8 @@
                     <label for="lstVisiteurs" class="me-2 mb-0">Choisir le visiteur :</label>
                     <select id="lstVisiteurs" name="lstVisiteurs" class="custom-select" onchange="this.form.submit()">
                         <option value="">Commencer par choisir le visiteur</option>
-                        <?php foreach ($lesVisiteurs as $unVisiteur) {
+                        <?php
+                        foreach ($lesVisiteurs as $unVisiteur) {
                             $idVisiteur = $unVisiteur['id'];
                             $prenom = $unVisiteur['prenom'];
                             $nom = $unVisiteur['nom'];
@@ -46,7 +47,8 @@
                     <label for="lstMois" class="me-2 mb-0">Mois :</label>
                     <select id="lstMois" name="lstMois" class="custom-select" onchange="this.form.submit()">
                         <option value="">Choisir le mois</option>
-                        <?php if (!empty($lesMois)) {
+                        <?php
+                        if (!empty($lesMois)) {
                             foreach ($lesMois as $unMois) {
                                 $mois = $unMois['mois'];
                                 $numAnnee = $unMois['numAnnee'];

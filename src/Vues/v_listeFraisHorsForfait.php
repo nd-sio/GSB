@@ -92,7 +92,7 @@ $userType = $_SESSION['user_type'] ?? '';
 <div class="row">
     <div class="panel panel-info">
         <div class="panel-heading">Descriptif des éléments hors forfait</div>
-        <form action="index.php?uc=gererFrais&action=validerCreationFrais" method="post" role="form">
+        <form action="index.php?uc=validerFrais&action=validerMajFraisHorsForfait" method="post" role="form">
             <table class="table table-bordered table-responsive">
                 <thead>  
                     <tr>
@@ -127,7 +127,8 @@ $userType = $_SESSION['user_type'] ?? '';
                             </td>
                             <td>
                                 <button class="btn btn-success" type="submit" name="corriger" value="<?php echo $id; ?>">Corriger</button>
-                                <button class="btn btn-danger" type="reset" name="supprimer" value="<?php echo $id; ?>">Réinitialiser</button>
+                                <button class="btn btn-danger" type="reset" value="<?php echo $id; ?>">Réinitialiser</button>
+
                             </td>
                         </tr>
                     <?php
@@ -135,6 +136,9 @@ $userType = $_SESSION['user_type'] ?? '';
                     ?>
                 </tbody>
             </table>
+            <input type="hidden" name="lstVisiteurs" value="<?php echo $idVisiteurSelectionne; ?>">
+            <input type="hidden" name="lstMois" value="<?php echo $moisSelectionne; ?>">
+            <input type="hidden" name="uc" value="validerFrais">
         </form>
     </div>
 </div>

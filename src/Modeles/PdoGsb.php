@@ -299,10 +299,10 @@ public function majFraisHorsForfait($idVisiteur, $mois, $lesFraisHorsForfait): v
         // Requête SQL pour mettre à jour les informations des frais hors forfait
         $requetePrepare = $this->connexion->prepare(
             'UPDATE lignefraishorsforfait
-             SET date = :date, libelle = :libelle, montant = :montant
-             WHERE idvisiteur = :idVisiteur
-             AND mois = :mois
-             AND id = :idFrais'
+             SET lignefraishorsforfait.date = :date, lignefraishorsforfait.libelle = :libelle, lignefraishorsforfait.montant = :montant
+             WHERE lignefraishorsforfait.idvisiteur = :idVisiteur
+             AND lignefraishorsforfait.mois = :mois
+             AND lignefraishorsforfait.id = :idFrais'
         );
 
         // Lier les paramètres à la requête
