@@ -79,7 +79,7 @@
             <?php
             } else if ($estConnecte && $userType === 'comptable') {
                 ?>
-                <div class="header">
+                <div class="header" >
                 <div class="row vertical-align">
                     <div class="col-md-4">
                         <h1>
@@ -91,7 +91,7 @@
                     <div class="col-md-8">
                         <ul class="nav nav-pills pull-right" role="tablist">
                             <li <?php if (!$uc || $uc == 'accueil') { ?>class="active" <?php } ?>>
-                                <a href="index.php">
+                                <a href="index.php" class="text-comptable">
                                     <span class="glyphicon glyphicon-home"></span>
                                     Accueil
                                 </a>

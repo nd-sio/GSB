@@ -122,6 +122,35 @@ class PdoGsb
     return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
 }
 
+
+// fonction 2 (avec mdp hashé)
+//public function getInfosVisiteur($login): array
+//{
+//    $requetePrepare = $this->connexion->prepare(
+//        'SELECT visiteur.id AS id, visiteur.nom AS nom, '
+//        . 'visiteur.prenom AS prenom '
+//        . 'FROM visiteur '
+//        . 'WHERE visiteur.login = :unLogin'
+//    );
+//    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+//    $requetePrepare->execute();
+//
+//    $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
+//    return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
+//}
+//
+//public function getMdpVisiteur($login) {
+//    $requetePrepare = $this->connexion->prepare(
+//        'SELECT mdp '
+//        . 'FROM visiteur '
+//        . 'WHERE visiteur.login = :unLogin'
+//    );
+//    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+//    $requetePrepare->execute();
+//    return $requetePrepare->fetch(PDO::FETCH_OBJ)->mdp;
+//}
+
+
     
     /**
      * Retourne les informations d'un comptable

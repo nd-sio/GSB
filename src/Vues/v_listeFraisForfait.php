@@ -17,6 +17,8 @@
  */
 
 ?> 
+<head><link href="./styles/style.css" rel="stylesheet"></head>
+
 <div class="row"> 
     <?php
 $userType = $_SESSION['user_type'] ?? '';
@@ -56,7 +58,7 @@ $userType = $_SESSION['user_type'] ?? '';
 <?php
     } else {
         ?>
-<h2>Valider la fiche de frais</h2>
+<h2 class="text-comptable">Valider la fiche de frais</h2>
     <h3>Eléments forfaitisés</h3>
     <div class="col-md-4">
         <form method="post" 

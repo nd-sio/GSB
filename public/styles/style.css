@@ -36,3 +36,11 @@ code {
 .custom-select {
     margin-right: 2px;
 }
+
+.background-comptable {
+    background-color: #ff8800;
+}
+
+.text-comptable {
+    color: #ff8800;
+}

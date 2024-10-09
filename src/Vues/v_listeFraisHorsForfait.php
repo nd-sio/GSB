@@ -144,9 +144,11 @@ $userType = $_SESSION['user_type'] ?? '';
     <div class="col-md-4">Nombre de justificatifs :
         <input type="text" name="nbJustificatifs" class="form-inline" value="<?php echo $nbJustificatifs; ?>">
     </div>
+    <div class="col-md-4">
+        <button class="btn btn-success" type="submit" name="valider">Valider</button>
+        <button class="btn btn-danger" type="reset">Réinitialiser</button>
+    </div>
 </div>
-
-<!--nbjustificatif + btn valider et réninit-->
 
 <?php
             }

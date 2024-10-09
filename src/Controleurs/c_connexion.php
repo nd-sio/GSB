@@ -32,7 +32,9 @@ switch ($action) {
         $comptable = $pdo->getInfosComptable($login, $mdp);
         if (empty($comptable)) {
         $visiteur = $pdo->getInfosVisiteur($login, $mdp);}
+        
 
+//        if (!password_verify($mdp,$pdo->getMdpVisiteur($login))) {
         if (!empty($comptable)) {
             // Comptable trouvé
             $_SESSION['user_type'] = 'comptable';
