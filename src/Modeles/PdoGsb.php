@@ -317,34 +317,23 @@ class PdoGsb
  *
  * @return void
  */
-public function majFraisHorsForfait($idVisiteur, $mois, $lesFraisHorsForfait): void
+public function majFraisHorsForfait($idVisiteur, $idFrais, $mois, $date, $libelle, $montant): void
 {
-    // Parcourir chaque frais hors forfait avec les données associées
-    foreach ($lesFraisHorsForfait as $idFrais => $fraisData) {
-        $date = $fraisData['date'];
-        $libelle = $fraisData['libelle'];
-        $montant = $fraisData['montant'];
-
-        // Requête SQL pour mettre à jour les informations des frais hors forfait
+    $dateFr = Utilitaires::dateFrancaisVersAnglais($date);
         $requetePrepare = $this->connexion->prepare(
-            'UPDATE lignefraishorsforfait
+           'UPDATE lignefraishorsforfait
              SET lignefraishorsforfait.date = :date, lignefraishorsforfait.libelle = :libelle, lignefraishorsforfait.montant = :montant
              WHERE lignefraishorsforfait.idvisiteur = :idVisiteur
              AND lignefraishorsforfait.mois = :mois
              AND lignefraishorsforfait.id = :idFrais'
         );
-
-        // Lier les paramètres à la requête
-        $requetePrepare->bindParam(':date', $date, PDO::PARAM_STR);
-        $requetePrepare->bindParam(':libelle', $libelle, PDO::PARAM_STR);
-        $requetePrepare->bindParam(':montant', $montant, PDO::PARAM_STR);
         $requetePrepare->bindParam(':idVisiteur', $idVisiteur, PDO::PARAM_STR);
         $requetePrepare->bindParam(':mois', $mois, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':libelle', $libelle, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':date', $dateFr, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':montant', $montant, PDO::PARAM_INT);
         $requetePrepare->bindParam(':idFrais', $idFrais, PDO::PARAM_INT);
-
-        // Exécuter la requête
         $requetePrepare->execute();
-    }
 }
 
 

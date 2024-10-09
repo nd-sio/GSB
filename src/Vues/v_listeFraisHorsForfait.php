@@ -91,7 +91,7 @@ $userType = $_SESSION['user_type'] ?? '';
 <hr>
 <div class="row">
     <div class="panel panel-info">
-        <div class="panel-heading">Descriptif des éléments hors forfait</div>
+        <div class="panel-heading" class="background-comptable">Descriptif des éléments hors forfait</div>
         <form action="index.php?uc=validerFrais&action=validerMajFraisHorsForfait" method="post" role="form">
             <table class="table table-bordered table-responsive">
                 <thead>  

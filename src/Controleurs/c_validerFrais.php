@@ -57,6 +57,28 @@ switch ($action) {
         }
         break;
         
+         case 'validerMajFraisHorsForfait':
+        $mois = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $idVisiteur = filter_input(INPUT_POST, 'lstVisiteurs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $idFrais = filter_input(INPUT_POST, 'corriger', FILTER_SANITIZE_NUMBER_INT);
+        var_dump('dateFrais'[$idFrais]);
+        $date = filter_input(INPUT_POST, 'dateFrais'[$idFrais], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $libelle = filter_input(INPUT_POST, 'libelleFrais'[$idFrais], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $montant = filter_input(INPUT_POST, 'montantFrais'[$idFrais], FILTER_VALIDATE_FLOAT);
+        var_dump($idVisiteur, $idFrais, $mois, $date, $libelle, $montant);
+        Utilitaires::valideInfosFrais($date, $libelle, $montant);
+        if (Utilitaires::nbErreurs() != 0) {
+            include PATH_VIEWS . 'v_erreurs.php';
+        } else {
+            $pdo->majFraisHorsForfait($idVisiteur, $idFrais, $mois, $date, $libelle, $montant);
+            header('Location: index.php?lstVisiteurs=' . urlencode($idVisiteur) . '&lstMois=' . urlencode($mois) . '&uc=validerFrais');
+        }
+         break;
+        
+        
+        
+        
+        
 //    case 'validerMajFraisHorsForfait':
 //        $lesFraisHorsForfait[$id] = ['dateFrais' => $date, 'libelleFrais' => $libelle, 'montantFrais' => $montant];
 //        $mois = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -71,55 +93,47 @@ switch ($action) {
 //        }
 //        break;
 //        
-        case 'validerMajFraisHorsForfait':
-    $id = filter_input(INPUT_POST, 'corriger', FILTER_SANITIZE_NUMBER_INT);
-    $date = Utilitaires::dateFrancaisVersAnglais(filter_input(INPUT_POST, 'dateFrais[' . $id . ']', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-    $libelle = filter_input(INPUT_POST, 'libelleFrais[' . $id . ']', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $montant = filter_input(INPUT_POST, 'montantFrais[' . $id . ']', FILTER_VALIDATE_FLOAT);
-
-    if ($id && $date && $libelle && $montant) {
-        $lesFraisHorsForfait[$id] = ['dateFrais' => $date, 'libelleFrais' => $libelle, 'montantFrais' => $montant];
-        $mois = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $idVisiteur = filter_input(INPUT_POST, 'lstVisiteurs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-        if (Utilitaires::valideInfosFrais($date, $libelle, $montant)) {
-            $pdo->majFraisHorsForfait($idVisiteur, $mois, $lesFraisHorsForfait[$id]);
-            header('Location: index.php?lstVisiteurs=' . urlencode($idVisiteur) . '&lstMois=' . urlencode($mois) . '&uc=validerFrais');
-        } else {
-            Utilitaires::ajouterErreur('Les valeurs des frais sont invalides');
-            include PATH_VIEWS . 'v_erreurs.php';
-        }
-    } else {
-        Utilitaires::ajouterErreur('Données manquantes ou incorrectes');
-        include PATH_VIEWS . 'v_erreurs.php';
-    }
-    break;
-        
 //        case 'validerMajFraisHorsForfait':
-//    // Récupération de l'identifiant du frais sélectionné
+//    $id = filter_input(INPUT_POST, 'corriger', FILTER_SANITIZE_NUMBER_INT);
+//    $date = Utilitaires::dateFrancaisVersAnglais(filter_input(INPUT_POST, 'dateFrais[' . $id . ']', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+//    $libelle = filter_input(INPUT_POST, 'libelleFrais[' . $id . ']', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+//    $montant = filter_input(INPUT_POST, 'montantFrais[' . $id . ']', FILTER_VALIDATE_FLOAT);
+//
+//    if ($id && $date && $libelle && $montant) {
+//        $lesFraisHorsForfait[$id] = ['dateFrais' => $date, 'libelleFrais' => $libelle, 'montantFrais' => $montant];
+//        $mois = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+//        $idVisiteur = filter_input(INPUT_POST, 'lstVisiteurs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+//
+//        if (Utilitaires::valideInfosFrais($date, $libelle, $montant)) {
+//            $pdo->majFraisHorsForfait($idVisiteur, $mois, $lesFraisHorsForfait[$id]);
+//            header('Location: index.php?lstVisiteurs=' . urlencode($idVisiteur) . '&lstMois=' . urlencode($mois) . '&uc=validerFrais');
+//        } else {
+//            Utilitaires::ajouterErreur('Les valeurs des frais sont invalides');
+//            include PATH_VIEWS . 'v_erreurs.php';
+//        }
+//    } else {
+//        Utilitaires::ajouterErreur('Données manquantes ou incorrectes');
+//        include PATH_VIEWS . 'v_erreurs.php';
+//    }
+//    break;
+//        
+//        case 'validerMajFraisHorsForfait':
 //    $id = filter_input(INPUT_POST, 'corriger', FILTER_SANITIZE_NUMBER_INT);
 //    
-//    // Récupération des champs spécifiques au frais hors forfait directement via $_POST
-//    if ($id) {
 ////        $date = Utilitaires::dateFrancaisVersAnglais(filter_input(INPUT_POST, 'dateFrais'[$id], FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-//        $date = Utilitaires::dateAnglaisVersFrancais(isset($_POST['dateFrais'][$id])) ? Utilitaires::dateFrancaisVersAnglais(htmlspecialchars($_POST['dateFrais'][$id])) : null;
+//        $date = Utilitaires::dateAnglaisVersFrancais(isset($_POST['dateFrais'][$id])) ? Utilitaires::dateAnglaisVersFrancais(htmlspecialchars($_POST['dateFrais'][$id])) : null;
 //        $libelle = isset($_POST['libelleFrais'][$id]) ? htmlspecialchars($_POST['libelleFrais'][$id]) : null;
 //        $montant = isset($_POST['montantFrais'][$id]) ? filter_var($_POST['montantFrais'][$id], FILTER_VALIDATE_FLOAT) : null;
 //        Utilitaires::valideInfosFrais($dateFrais, $libelle, $montant);
-//        var_dump($id);
-//        var_dump($date, $libelle, $montant); // Vérification des valeurs récupérées
+////        var_dump($id);
+//        var_dump($date, $libelle, $montant);
 //
-//        // Vérifiez que chaque donnée a bien été récupérée
-//        if ($date && $libelle && $montant !== null) {
-//            // Stockage des frais dans le tableau
 //            $lesFraisHorsForfait[$id] = ['dateFrais' => $date, 'libelleFrais' => $libelle, 'montantFrais' => $montant];
 //            
-//            // Récupération des autres informations nécessaires
 //            $mois = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 //            $idVisiteur = filter_input(INPUT_POST, 'lstVisiteurs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-//            var_dump($mois, $idVisiteur);
+////            var_dump($mois, $idVisiteur);
 //            
-//            // Validation des informations
 //            if (Utilitaires::valideInfosFrais($date, $libelle, $montant)) {
 //                // Mise à jour des frais hors forfait dans la base de données
 //                $pdo->majFraisHorsForfait($idVisiteur, $mois, $lesFraisHorsForfait[$id]);
@@ -128,14 +142,6 @@ switch ($action) {
 //                Utilitaires::ajouterErreur('Les valeurs des frais sont invalides');
 //                include PATH_VIEWS . 'v_erreurs.php';
 //            }
-//        } else {
-//            Utilitaires::ajouterErreur('Données manquantes ou incorrectes');
-//            include PATH_VIEWS . 'v_erreurs.php';
-//        }
-//    } else {
-//        Utilitaires::ajouterErreur('Frais sélectionné incorrect');
-//        include PATH_VIEWS . 'v_erreurs.php';
-//    }
 //    break;
 
     case 'validerFicheFrais':

@@ -68,7 +68,7 @@ $userType = $_SESSION['user_type'] ?? '';
 </div>
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-primary">
+        <div class="panel panel-comptable">
             <div class="panel-heading">
                 <h3 class="panel-title">
                     <span class="glyphicon glyphicon-bookmark"></span>
@@ -83,7 +83,7 @@ $userType = $_SESSION['user_type'] ?? '';
                             <span class="glyphicon glyphicon-ok"></span>
                             <br>Valider les fiches de frais</a>
                         <a href="index.php?uc=etatFrais&action=selectionnerMois"
-                           class="btn btn-primary btn-lg" role="button">
+                           class="btn btn-comptable btn-lg" role="button">
                             <span class="glyphicon glyphicon-euro"></span>
                             <br>Suivre le paiement des fiches de frais</a>
                     </div>

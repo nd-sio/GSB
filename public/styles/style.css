@@ -37,10 +37,48 @@ code {
     margin-right: 2px;
 }
 
-.background-comptable {
-    background-color: #ff8800;
+.background-comptable > li {
+  float: left;
 }
-
+.background-comptable > li > a {
+  border-radius: 4px;
+}
+.background-comptable > li + li {
+  margin-left: 2px;
+}
+.background-comptable > li.active > a,
+.background-comptable > li.active > a:hover,
+.background-comptable > li.active > a:focus {
+  color: #fff;
+  background-color: #ff8800;
+}
 .text-comptable {
     color: #ff8800;
+}
+a:hover {
+    color: #ff8800;
+}
+.panel-comptable {
+  border-color: #ff8800;
+}
+.panel-comptable > .panel-heading {
+  color: #fff;
+  background-color: #ff8800;
+  border-color: #ff8800;
+}
+.btn-comptable {
+  color: #fff;
+  background-color: #ff8800;
+  border-color: #f58d16;
+}
+.btn-comptable:focus,
+.btn-comptable.focus {
+  color: #fff;
+  background-color: #db7602;
+  border-color: #f58d16;
+}
+.btn-comptable:hover {
+  color: #fff;
+  background-color: #db7602;
+  border-color: #f58d16;
 }
