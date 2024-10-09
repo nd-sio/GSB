@@ -10,6 +10,7 @@
         <form action="index.php?uc=etatFrais&action=voirEtatFrais" 
               method="post" role="form">
             <div class="form-group">
+                <label for="">Choisir le visiteur : </label>
                 <label for="lstMois" accesskey="n">Mois : </label>
                 <select id="lstMois" name="lstMois" class="form-control">
                     <?php

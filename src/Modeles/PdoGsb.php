@@ -104,6 +104,19 @@ class PdoGsb
         $requetePrepare->execute();
         return $requetePrepare->fetch();
     }
+    
+    /**
+     * Retourne tous les visiteurs en saisissant le nom
+     * 
+     */
+    public function getTousLesVisiteur(): array 
+    {
+        $requetePrepare = $this->connexion->prepare(
+                'SELECT * from visiteur;'
+        );
+        $requetePrepare->execute();
+        return $requetePrepare->fetch();
+    }
 
     /**
      * Retourne sous forme d'un tableau associatif toutes les lignes de frais
