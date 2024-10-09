@@ -145,8 +145,10 @@ $userType = $_SESSION['user_type'] ?? '';
         <input type="text" name="nbJustificatifs" class="form-inline" value="<?php echo $nbJustificatifs; ?>">
     </div>
     <div class="col-md-4">
+       <form action="index.php?uc=validerFrais&action=validerFicheFrais" method="post" role="form">
         <button class="btn btn-success" type="submit" name="valider">Valider</button>
         <button class="btn btn-danger" type="reset">Réinitialiser</button>
+    </form>
     </div>
 </div>
 
