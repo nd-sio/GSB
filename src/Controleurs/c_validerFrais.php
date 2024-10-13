@@ -39,6 +39,15 @@ $idVisiteurSelectionne = filter_input(INPUT_GET, 'lstVisiteurs', FILTER_SANITIZE
         $nbJustificatifs = $pdo->getNbjustificatifs($idVisiteurSelectionne, $moisSelectionne);
         }
         
+ $idVisiteurTest = filter_input(INPUT_POST, 'lstVisiteurs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);       
+ $moisTest = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+ 
+if($idVisiteurSelectionne != null && $moisSelectionne != null){        
+    $infoFicheFrais = $pdo->getLesInfosFicheFrais($idVisiteurSelectionne, $moisSelectionne);
+
+}
+$validationFicheFraisInterdite = array('CR', 'VA', 'RB');
+
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     
 switch ($action) {   
@@ -76,7 +85,18 @@ switch ($action) {
          break;
 
     case 'validerFicheFrais':
-        $pdo->majEtatFicheFrais($idVisiteurSelectionne, $moisSelectionne, 'VA');
+        $mois = filter_input(INPUT_POST, 'lstMois', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $idVisiteur = filter_input(INPUT_POST, 'lstVisiteurs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+//        if (Utilitaires::nbErreurs() != 0) {
+//            include PATH_VIEWS . 'v_erreurs.php';
+//        } else {
+            $nbJustificatifs = filter_input(INPUT_POST, 'nbJustificatifs', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            var_dump($nbJustificatifs, $mois, $idVisiteur);
+            $pdo->majNbJustificatifs($idVisiteur, $mois, $nbJustificatifs);
+            $pdo->majEtatFicheFrais($idVisiteur, $mois, 'VA');
+            header('Location: index.php?lstVisiteurs=' . urlencode($idVisiteur) . '&lstMois=' . urlencode($mois) . '&uc=validerFrais');
+//        }
+        
         break;
         
 }

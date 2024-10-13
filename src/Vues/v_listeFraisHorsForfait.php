@@ -138,16 +138,28 @@ $userType = $_SESSION['user_type'] ?? '';
             </table>
             <input type="hidden" name="lstVisiteurs" value="<?php echo $idVisiteurSelectionne; ?>">
             <input type="hidden" name="lstMois" value="<?php echo $moisSelectionne; ?>">
-<!--            <input type="hidden" name="uc" value="validerFrais">-->
+
         </form>
     </div>
-    <div class="col-md-4">Nombre de justificatifs :
-        <input type="text" name="nbJustificatifs" class="form-inline" value="<?php echo $nbJustificatifs; ?>">
-    </div>
+    
     <div class="col-md-4">
        <form action="index.php?uc=validerFrais&action=validerFicheFrais" method="post" role="form">
+        <div>Nombre de justificatifs :
+<!--            <fieldset>-->
+            <input type="text" name="nbJustificatifs" size="2" maxlength="5" value="<?php echo $nbJustificatifs; ?>">
+            <!--</fieldset>-->
+        </div>         
+           <?php if (in_array($infoFicheFrais['idEtat'], $validationFicheFraisInterdite)) { ?>
+           <button class="btn btn-success" type="submit" name="valider" disabled>Valider</button>
+           <?php
+           } else {
+               ?>
         <button class="btn btn-success" type="submit" name="valider">Valider</button>
         <button class="btn btn-danger" type="reset">Réinitialiser</button>
+           <?php } ?>
+        
+        <input type="hidden" name="lstVisiteurs" value="<?php echo $idVisiteurSelectionne; ?>">
+        <input type="hidden" name="lstMois" value="<?php echo $moisSelectionne; ?>">
     </form>
     </div>
 </div>
