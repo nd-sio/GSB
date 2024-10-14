@@ -98,6 +98,17 @@ class PdoGsb
     return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
 }
 
+  public function getAllComptables(): array
+{
+    $requetePrepare = $this->connexion->prepare(
+        'SELECT * FROM comptable '
+    );
+    $requetePrepare->execute();
+
+    $result = $requetePrepare->fetchAll();
+    return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
+}
+
     /**
      * Retourne les informations d'un visiteur
      *
@@ -123,34 +134,101 @@ class PdoGsb
 }
 
 
+    /**
+     * Retourne les informations d'un visiteur
+     *
+     * @param String $login Login du visiteur
+     *
+     * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
+     */
 // fonction 2 (avec mdp hashé)
-//public function getInfosVisiteur($login): array
-//{
-//    $requetePrepare = $this->connexion->prepare(
-//        'SELECT visiteur.id AS id, visiteur.nom AS nom, '
-//        . 'visiteur.prenom AS prenom '
-//        . 'FROM visiteur '
-//        . 'WHERE visiteur.login = :unLogin'
-//    );
-//    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-//    $requetePrepare->execute();
-//
-//    $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
-//    return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
-//}
-//
-//public function getMdpVisiteur($login) {
-//    $requetePrepare = $this->connexion->prepare(
-//        'SELECT mdp '
-//        . 'FROM visiteur '
-//        . 'WHERE visiteur.login = :unLogin'
-//    );
-//    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-//    $requetePrepare->execute();
-//    return $requetePrepare->fetch(PDO::FETCH_OBJ)->mdp;
-//}
+    public function getInfosVisiteur2($login): array
+ {
+    $requetePrepare = $this->connexion->prepare(
+        'SELECT visiteur.id AS id, visiteur.nom AS nom, '
+        . 'visiteur.prenom AS prenom '
+        . 'FROM visiteur '
+        . 'WHERE visiteur.login = :unLogin'
+    );
+    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+    $requetePrepare->execute();
+    return $requetePrepare->fetch();
+ }
+ 
+  /**
+     * Retourne les informations d'un comptable
+     *
+     * @param String $login Login du comptable
+     * @param String $mdp   Mot de passe du comptable
+     *
+     * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
+     */
+    public function getInfosComptable2($login): array
+{
+    $requetePrepare = $this->connexion->prepare(
+        'SELECT comptable.id AS id, comptable.nom AS nom, '
+        . 'comptable.prenom AS prenom '
+        . 'FROM comptable '
+        . 'WHERE comptable.login = :unLogin'
+    );
+    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+    $requetePrepare->execute();
+    return $requetePrepare->fetch();
+}
+
+ 
+    /**
+     * Retourne le mdp du visiteur
+     *
+     * @param String $login Login du visiteur
+     *
+     * @return le mdp du visiteur se connectant
+     */
+    public function getMdpVisiteur($login) 
+ {
+    $requetePrepare = $this->connexion->prepare(
+        'SELECT mdp '
+        . 'FROM visiteur '
+        . 'WHERE visiteur.login = :unLogin'
+    );
+    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+    $requetePrepare->execute();
+    return $requetePrepare->fetch(PDO::FETCH_OBJ)->mdp;
+ }
+ 
+  /**
+     * Retourne le mdp du comptable
+     *
+     * @param String $login Login du comptable
+     *
+     * @return le mdp du comptable se connectant
+     */
+    public function getMdpComptable($login) 
+ {
+    $requetePrepare = $this->connexion->prepare(
+        'SELECT mdp '
+        . 'FROM comptable '
+        . 'WHERE comptable.login = :unLogin'
+    );
+    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+    $requetePrepare->execute();
+    return $requetePrepare->fetch(PDO::FETCH_OBJ)->mdp;
+ }
 
 
+    public function transformMdp(): array 
+ {
+    $listeVisiteurs = $this->getAllComptables();
+    foreach ($listeVisiteurs as $visiteur) {
+        $mdp = $visiteur['mdp'];
+        $id = $visiteur['id'];
+        $hashMdp = password_hash($mdp, PASSWORD_DEFAULT);
+        $req = $this->connexion->prepare('UPDATE comptable SET mdp= :hashMdp WHERE id= :unId');
+        $req->bindParam(':hashMdp', $hashMdp, PDO::PARAM_STR);
+        $req->bindParam(':unId', $id, PDO::PARAM_STR);
+        $req->execute();
+ }
+}
     
     /**
      * Retourne les informations d'un comptable

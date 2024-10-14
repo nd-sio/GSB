@@ -27,30 +27,33 @@ switch ($action) {
         include PATH_VIEWS . 'v_connexion.php';
         break;
     case 'valideConnexion':
+//        $pdo->transformMdp();
         $login = filter_input(INPUT_POST, 'login', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $mdp = filter_input(INPUT_POST, 'mdp', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $comptable = $pdo->getInfosComptable($login, $mdp);
+        $comptable = $pdo->getInfosComptable2($login);
         if (empty($comptable)) {
-        $visiteur = $pdo->getInfosVisiteur($login, $mdp);}
+//        $visiteur = $pdo->getInfosVisiteur($login, $mdp);
+        $visiteur = $pdo->getInfosVisiteur2($login);
+        }
         
 
-//        if (!password_verify($mdp,$pdo->getMdpVisiteur($login))) {
-        if (!empty($comptable)) {
+        if (password_verify($mdp,$pdo->getMdpVisiteur($login))) {
+//        } elseif (!empty($visiteur2)) {
+            // Visiteur trouvé
+            $_SESSION['user_type'] = 'visiteur';
+            $_SESSION['user_info'] = $visiteur2;
+            $id = $visiteur['id'];
+            $nom = $visiteur['nom'];
+            $prenom = $visiteur['prenom'];
+            Utilitaires::connecter($id, $nom, $prenom);
+            header('Location: index.php');
+        } elseif (password_verify($mdp,$pdo->getMdpComptable($login))) {
             // Comptable trouvé
             $_SESSION['user_type'] = 'comptable';
             $_SESSION['user_info'] = $comptable;
             $id = $comptable['id'];
             $nom = $comptable['nom'];
             $prenom = $comptable['prenom'];
-            Utilitaires::connecter($id, $nom, $prenom);
-            header('Location: index.php');
-        } elseif (!empty($visiteur)) {
-            // Visiteur trouvé
-            $_SESSION['user_type'] = 'visiteur';
-            $_SESSION['user_info'] = $visiteur;
-            $id = $visiteur['id'];
-            $nom = $visiteur['nom'];
-            $prenom = $visiteur['prenom'];
             Utilitaires::connecter($id, $nom, $prenom);
             header('Location: index.php');
         } else {
