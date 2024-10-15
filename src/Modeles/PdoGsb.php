@@ -98,7 +98,7 @@ class PdoGsb
     return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
 }
 
-  public function getAllComptables(): array
+    public function getAllComptables(): array
 {
     $requetePrepare = $this->connexion->prepare(
         'SELECT * FROM comptable '
@@ -121,7 +121,7 @@ class PdoGsb
 {
     $requetePrepare = $this->connexion->prepare(
         'SELECT visiteur.id AS id, visiteur.nom AS nom, '
-        . 'visiteur.prenom AS prenom '
+        . 'visiteur.prenom AS prenom'
         . 'FROM visiteur '
         . 'WHERE visiteur.login = :unLogin AND visiteur.mdp = :unMdp'
     );
@@ -146,7 +146,7 @@ class PdoGsb
  {
     $requetePrepare = $this->connexion->prepare(
         'SELECT visiteur.id AS id, visiteur.nom AS nom, '
-        . 'visiteur.prenom AS prenom '
+        . 'visiteur.prenom AS prenom, visiteur.email as email '
         . 'FROM visiteur '
         . 'WHERE visiteur.login = :unLogin'
     );
@@ -173,7 +173,9 @@ class PdoGsb
     );
     $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
     $requetePrepare->execute();
-    return $requetePrepare->fetch();
+//    return $requetePrepare->fetch();
+    $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
+    return $result ?: [];
 }
 
  
@@ -196,7 +198,44 @@ class PdoGsb
     return $requetePrepare->fetch(PDO::FETCH_OBJ)->mdp;
  }
  
-  /**
+     /**
+     * Met à jour le code d'authentification à 2 facteurs du visiteur
+     *
+     * @param String $id Id du visiteur
+     * @param String $code Code d'authentification 
+     *
+     */
+    public function setCodeA2f($id, $code) {
+    $requetePrepare = $this->connexion->prepare(
+        'UPDATE visiteur '
+      . 'SET codea2f = :unCode '
+      . 'WHERE visiteur.id = :unIdVisiteur '
+    );
+    $requetePrepare->bindParam(':unCode', $code, PDO::PARAM_STR);
+    $requetePrepare->bindParam(':unIdVisiteur', $id, PDO::PARAM_STR);
+    $requetePrepare->execute();
+ }
+
+ 
+    /**
+     * Renvoie le code d'authentification à 2 facteurs du visiteur se connectant
+     *
+     * @param String $id Id du visiteur
+     *
+     * @return le code A2F du visiteur
+     */
+    public function getCodeVisiteur($id) {
+    $requetePrepare = $this->connexion->prepare(
+        'SELECT visiteur.codea2f AS codea2f '
+      . 'FROM visiteur '
+      . 'WHERE visiteur.id = :unId'
+    );
+    $requetePrepare->bindParam(':unId', $id, PDO::PARAM_STR);
+    $requetePrepare->execute();
+    return $requetePrepare->fetch()['codea2f'];
+ }
+ 
+    /**
      * Retourne le mdp du comptable
      *
      * @param String $login Login du comptable
