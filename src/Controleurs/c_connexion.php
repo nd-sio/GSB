@@ -52,14 +52,19 @@ switch ($action) {
             include PATH_VIEWS . 'v_code2facteurs.php';
             Utilitaires::connecter($id, $nom, $prenom);
 //            header('Location: index.php');
-//        } elseif (password_verify($mdp,$pdo->getMdpComptable($login))) {
-//            // Comptable trouvé
-//            $_SESSION['user_type'] = 'comptable';
-//            $_SESSION['user_info'] = $comptable;
-//            $id = $comptable['id'];
-//            $nom = $comptable['nom'];
-//            $prenom = $comptable['prenom'];
-//            Utilitaires::connecter($id, $nom, $prenom);
+        } elseif (password_verify($mdp,$pdo->getMdpComptable($login))) {
+            // Comptable trouvé
+            $_SESSION['user_type'] = 'comptable';
+            $_SESSION['user_info'] = $comptable;
+            $id = $comptable['id'];
+            $nom = $comptable['nom'];
+            $prenom = $comptable['prenom'];
+            $email = $comptable['email'];
+            $code = rand(1000, 9999);
+            $pdo->setCodeA2f($id,$code);
+            mail($email, '[GSB-AppliFrais] Code de vérification', "Code : $code");
+            include PATH_VIEWS . 'v_code2facteurs.php';
+            Utilitaires::connecter($id, $nom, $prenom);
 //            header('Location: index.php');
         } else {
             // Ni visiteur ni comptable trouvé
