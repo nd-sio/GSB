@@ -558,6 +558,26 @@ public function majFraisHorsForfait($idVisiteur, $idFrais, $mois, $date, $libell
         $laLigne = $requetePrepare->fetch();
         return $laLigne;
     }
+    
+    
+    public function getAllFichesFrais($etat): array
+    {
+        $requetePrepare = $this->connexion->prepare(
+            'SELECT fichefrais.idetat as idEtat, '
+            . 'fichefrais.datemodif as dateModif,'
+            . 'fichefrais.nbjustificatifs as nbJustificatifs, '
+            . 'fichefrais.montantvalide as montantValide, '
+            . 'etat.libelle as libEtat '
+            . 'FROM fichefrais '
+            . 'INNER JOIN etat ON fichefrais.idetat = etat.id '
+            . 'WHERE fichefrais.idEtat = :unEtat '
+            . 'LIMIT 50'    
+        );
+        $requetePrepare->bindParam(':unEtat', $etat, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        $leTableau = $requetePrepare->fetch();
+        return $leTableau;
+    }
 
     /**
      * Modifie l'état et la date de modification d'une fiche de frais.

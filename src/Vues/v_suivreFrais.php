@@ -11,7 +11,7 @@
             <div class="col-md-6">
                 <div class="d-flex align-items-center">
                     <label for="typeFiche" class="me-2 mb-0">Choisir le type de fiche :</label>
-                    <select id="typeFiche" name="typeFiche" class="custom-select" onchange="this.form.submit()">
+                    <select id="etatFiche" name="etatFiche" class="custom-select" onchange="this.form.submit()">
                         <option value="">Commencer par choisir un type</option>
                         <option value="VA">Fiche validée</option>
                         <option value="CL">Fiche clôturée</option>
