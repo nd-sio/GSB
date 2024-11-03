@@ -218,6 +218,7 @@ class PdoGsb
      * @return le nombre entier de justificatifs
      */
     public function getNbjustificatifs($idVisiteur, $mois): int
+    
     {
         $requetePrepare = $this->connexion->prepare(
             'SELECT fichefrais.nbjustificatifs as nb FROM fichefrais '
@@ -276,7 +277,6 @@ class PdoGsb
     }
 
     /**
-     * Met à jour la table ligneFraisForfait
      * Met à jour la table ligneFraisForfait pour un visiteur et
      * un mois donné en enregistrant les nouveaux montants
      *
@@ -307,9 +307,9 @@ class PdoGsb
         }
     }
     
-/**
+/** MODIF EN MAJ
  * Met à jour la table ligneFraisHorsForfait pour un visiteur et
- * un mois donné en enregistrant la date, le libelle et le montant
+ * un IDFRAIS donné en enregistrant la date, le libelle et le montant AJOUT : UPDATE DU MOIS POUR FRAIS REFUSE
  *
  * @param String $idVisiteur ID du visiteur
  * @param String $mois       Mois sous la forme aaaamm
@@ -322,9 +322,8 @@ public function majFraisHorsForfait($idVisiteur, $idFrais, $mois, $date, $libell
     $dateFr = Utilitaires::dateFrancaisVersAnglais($date);
         $requetePrepare = $this->connexion->prepare(
            'UPDATE lignefraishorsforfait
-             SET lignefraishorsforfait.date = :date, lignefraishorsforfait.libelle = :libelle, lignefraishorsforfait.montant = :montant
+             SET lignefraishorsforfait.date = :date, lignefraishorsforfait.libelle = :libelle, lignefraishorsforfait.montant = :montant,lignefraishorsforfait.mois = :mois
              WHERE lignefraishorsforfait.idvisiteur = :idVisiteur
-             AND lignefraishorsforfait.mois = :mois
              AND lignefraishorsforfait.id = :idFrais'
         );
         $requetePrepare->bindParam(':idVisiteur', $idVisiteur, PDO::PARAM_STR);
@@ -335,6 +334,35 @@ public function majFraisHorsForfait($idVisiteur, $idFrais, $mois, $date, $libell
         $requetePrepare->bindParam(':idFrais', $idFrais, PDO::PARAM_INT);
         $requetePrepare->execute();
 }
+
+
+
+/**
+     * Met à jour la table ligneFraisHorsForfait
+     * Met à jour la table ligneFraisHorsForfait pour un visiteur et
+     * un mois donné en enregistrant le texte REFUSE et en troncant à droite le libelle
+     *
+     * @param String $idVisiteur ID du visiteur
+     * @param String $mois       Mois sous la forme aaaamm
+     * @param String $idFrais   ID du Frais clé primaire
+     *
+     * @return null
+     */
+public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
+{
+        $requetePrepare = $this->connexion->prepare(
+           'UPDATE lignefraishorsforfait
+             SET lignefraishorsforfait.libelle = CONCAT("REFUSE ",LEFT(lignefraishorsforfait.libelle,92))
+             WHERE lignefraishorsforfait.idvisiteur = :idVisiteur
+             AND lignefraishorsforfait.mois = :mois
+             AND lignefraishorsforfait.id = :idFrais'
+        );
+        $requetePrepare->bindParam(':idVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':mois', $mois, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':idFrais', $idFrais, PDO::PARAM_INT);
+        $requetePrepare->execute();
+}
+
 
 
     /**
@@ -560,24 +588,65 @@ public function majFraisHorsForfait($idVisiteur, $idFrais, $mois, $date, $libell
     }
     
     
-    public function getAllFichesFrais($etat): array
+    
+    
+    public function getAllFichesFraisValidees($idVisiteur): array
     {
         $requetePrepare = $this->connexion->prepare(
             'SELECT fichefrais.idetat as idEtat, '
+            . 'fichefrais.mois as mois,'  
             . 'fichefrais.datemodif as dateModif,'
             . 'fichefrais.nbjustificatifs as nbJustificatifs, '
-            . 'fichefrais.montantvalide as montantValide, '
+            . 'fichefrais.montantvalide as montantValide, '    
             . 'etat.libelle as libEtat '
             . 'FROM fichefrais '
             . 'INNER JOIN etat ON fichefrais.idetat = etat.id '
-            . 'WHERE fichefrais.idEtat = :unEtat '
+            . 'WHERE fichefrais.idvisiteur = :idVisiteur'     
             . 'LIMIT 50'    
+                
         );
-        $requetePrepare->bindParam(':unEtat', $etat, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':idVisiteur', $idVisiteur, PDO::PARAM_STR);
         $requetePrepare->execute();
-        $leTableau = $requetePrepare->fetch();
+        $leTableau = $requetePrepare->fetchAll();
         return $leTableau;
     }
+    
+    
+    
+    /**
+     * Remarque ici l'argument limitNumber est facultatif et à 5 par défaut NONO
+     */
+    
+    public function getLastFichesFrais($idVisiteur, $limitNumber=5): array
+    {
+        $requetePrepare = $this->connexion->prepare(
+            'SELECT fichefrais.idetat as idEtat, '
+            . 'fichefrais.mois as mois,'  
+            . 'fichefrais.datemodif as dateModif,'
+            . 'fichefrais.nbjustificatifs as nbJustificatifs, '
+            . 'fichefrais.montantvalide as montantValide, '    
+            . 'etat.libelle as libEtat '
+            . 'FROM fichefrais '
+            . 'INNER JOIN etat ON fichefrais.idetat = etat.id '
+            . 'WHERE fichefrais.idvisiteur = :idVisiteur '   
+            . 'ORDER BY mois DESC LIMIT :limitNumber'  
+                
+                
+        );
+        $requetePrepare->bindParam(':idVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':limitNumber', $limitNumber, PDO::PARAM_INT);
+        $requetePrepare->execute();
+        $leTableau = $requetePrepare->fetchAll();
+        return $leTableau;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 
     /**
      * Modifie l'état et la date de modification d'une fiche de frais.
@@ -602,4 +671,55 @@ public function majFraisHorsForfait($idVisiteur, $idFrais, $mois, $date, $libell
         $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
         $requetePrepare->execute();
     }
+    
+    
+    /**
+     * Crée une nouvelle fiche de frais et les lignes de frais Hors forfait
+     * pour un visiteur et un mois donnés
+     *
+     * Récupère le dernier mois en cours de traitement, met à 'CL' son champs
+     * idEtat, crée une nouvelle fiche de frais avec un idEtat à 'CR' et crée
+     * les lignes de frais forfait de quantités nulles
+     *
+     * @param String $idVisiteur ID du visiteur
+     * @param String $mois       Mois sous la forme aaaamm
+     *
+     * @return null
+     */
+    
+    
+    
+    public function creerFicheFrais($idVisiteur, $mois): void
+    {
+        $dernierMois = $this->dernierMoisSaisi($idVisiteur);
+        $laDerniereFiche = $this->getLesInfosFicheFrais($idVisiteur, $dernierMois);
+        if ($laDerniereFiche['idEtat'] == 'CR') {
+            $this->majEtatFicheFrais($idVisiteur, $dernierMois, 'CL');
+        }
+        $requetePrepare = $this->connexion->prepare(
+            'INSERT INTO fichefrais (idvisiteur,mois,nbjustificatifs,'
+            . 'montantvalide,datemodif,idetat) '
+            . "VALUES (:unIdVisiteur,:unMois,0,0,now(),'CR')"
+        );
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->execute();
+
+    }
+
+    
+    
+     public function deplacerFraisHorsForfaitsRefusesMoisSuivant($idVisiteur, $mois, $moisSuivant): void {
+        $fraisHorsForfait = $this->getLesFraisHorsForfait($idVisiteur, $mois);
+
+        foreach ($fraisHorsForfait as $unFrais) {
+            if (str_contains($unFrais['libelle'], 'REFUSE')) {
+                $this->majFraisHorsForfait($idVisiteur, $unFrais['id'], $moisSuivant, $unFrais['date'], $unFrais['libelle'], $unFrais['montant']);
+            }
+        }
+    }
+      
+    
+    
+    
 }

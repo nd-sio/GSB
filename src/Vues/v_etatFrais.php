@@ -17,17 +17,27 @@
  */
 
 ?>
+
+
+<?php $userType = $_SESSION['user_type'] ?? '';?>  
+
 <hr>
-<div class="panel panel-primary">
-    <div class="panel-heading">Fiche de frais du mois 
+<div class="panel panel-primary <?php echo $userType == 'comptable' ? "panel-comptable border-comptable" : "" ;?>">
+         
+      <div class="panel-heading">Fiche de frais du mois 
         <?php echo $numMois . '-' . $numAnnee ?> : </div>
+          
     <div class="panel-body">
         <strong><u>Etat :</u></strong> <?php echo $libEtat ?>
         depuis le <?php echo $dateModif ?> <br> 
         <strong><u>Montant validé :</u></strong> <?php echo $montantValide ?>
     </div>
 </div>
-<div class="panel panel-info">
+
+
+  
+
+<div class="panel panel-info <?php echo $userType == 'comptable' ? 'panel-light-comptable border-comptable':'';?>">
     <div class="panel-heading">Eléments forfaitisés</div>
     <table class="table table-bordered table-responsive">
         <tr>
@@ -50,7 +60,7 @@
         </tr>
     </table>
 </div>
-<div class="panel panel-info">
+<div class="panel panel-info <?php echo $userType == 'comptable' ? 'panel-light-comptable border-comptable':'';?>">
     <div class="panel-heading">Descriptif des éléments hors forfait - 
         <?php echo $nbJustificatifs ?> justificatifs reçus</div>
     <table class="table table-bordered table-responsive">

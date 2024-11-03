@@ -17,7 +17,6 @@
  */
 
 ?> 
-<head><link href="./styles/style.css" rel="stylesheet"></head>
 
 <div class="row"> 
     <?php
@@ -56,13 +55,26 @@ $userType = $_SESSION['user_type'] ?? '';
     </div>
 </div>
 <?php
-    } else {
+    } 
+    
+//  Partie comptable, trop de différence de code et de conditions pour faire "mélanger" les deux versions qui serait trop dure à lire
+    else
+    {            
         ?>
-<h2 class="text-comptable">Valider la fiche de frais</h2>
+<h2 class="text-comptable"><?php echo $erreurMois ? " Pas de fiche pour le mois courant, choisir un mois dans la liste des mois disponibles" :"" ?>
+                        
+                        
+</h2>
+
+<h2 class="text-comptable">Valider la fiche de frais,
+                        <?php echo $validationInterdite ? " : INTERDIT" :"" ?>
+                        état : <?php echo $infoFicheFrais["libEtat"]; ?>
+                        
+</h2>
     <h3>Eléments forfaitisés</h3>
-    <div class="col-md-4">
+    <div class="col-md-4 <?php echo $correctionFraisForfait ? "light-yellow" :"" ?>" >
         <form method="post" 
-              action="index.php?uc=validerFrais&action=validerMajFraisForfait" 
+              action="index.php?uc=validerFrais&action=validerMajFraisForfait&idVisiteurSelectionne=<?php echo $idVisiteurSelectionne; ?>&moisSelectionne=<?php echo $moisSelectionne; ?>" 
               role="form">
             <fieldset>       
                 <?php
@@ -93,14 +105,15 @@ $userType = $_SESSION['user_type'] ?? '';
                 <?php
             if ($hasNonNullInput) { // Vérifier si au moins un input est non vide
                 ?>
-                <button class="btn btn-success" type="submit">Corriger</button>
-                <button class="btn btn-danger" type="reset">Réinitialiser</button>
+                <button class="btn btn-success" type="submit" <?php echo $modificationFraisInterdite ? 'disabled':''; ?>>Corriger</button>
+                <button class="btn btn-danger" type="reset" <?php echo $modificationFraisInterdite ? 'disabled':''; ?>>Réinitialiser</button>
+                <?php echo $correctionFraisForfait ? "FRAIS ENREGISTRE" :"" ?>
             <?php
             }
             ?>
             </fieldset>
-            <input type="hidden" name="lstVisiteurs" value="<?php echo $idVisiteurSelectionne; ?>">
-            <input type="hidden" name="lstMois" value="<?php echo $moisSelectionne; ?>">
+<!--            <input type="hidden" name="idVisiteurSelectionne" value="<?php echo $idVisiteurSelectionne; ?>">
+            <input type="hidden" name="moisSelectionne" value="<?php echo $moisSelectionne; ?>">-->
         </form>
     </div>
 </div>

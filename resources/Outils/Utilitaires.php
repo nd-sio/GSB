@@ -250,4 +250,56 @@ abstract class Utilitaires
             return count($_REQUEST['erreurs']);
         }
     }
+    
+    
+    /**
+ * Add one month to a 'YYYYMM' type month avoiding 0 missing and december pb !
+ * Ajoute un mois du type 'AAAAMM', ajoute un 0 aux petits mois et gère la fin d'année !
+ * @author Noémie Destombes
+ * @param  'YYYYMM' month string
+ * @return 'YYYYMM' month string
+ */
+  
+    
+    public static function ajouteUnMois($mois): string
+    {
+        $numAnnee = substr($mois, 0, 4);
+        $numMois = substr($mois, 4, 2);
+        if ($numMois == '12' ) {
+            $numMois = '01';
+            $numAnnee = $numAnnee + '1';
+        }else
+           {
+            $numMois = $numMois + '1';
+        } 
+        
+        
+        if (strlen($numMois) == 1) {
+            $numMois = '0' . $numMois;
+        }
+        return $numAnnee . $numMois;
+    }
+    
+    /**
+ * Convert a multi-dimensional array into a single-dimensional array.
+ * @author Sean Cannon, LitmusBox.com | seanc@litmusbox.com
+ * @param  array $array The multi-dimensional array.
+ * @return array
+ */
+ public static function array_flatten($array) : array
+ { 
+  if (!is_array($array)) { 
+    return false; 
+  } 
+  $result = array(); 
+  foreach ($array as $key => $value) { 
+    if (is_array($value)) { 
+      $result = array_merge($result, array_flatten($value)); 
+    } else { 
+      $result = array_merge($result, array($key => $value));
+    } 
+  } 
+  return $result; 
+}
+    
 }

@@ -26,6 +26,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/vnd.icon" href="./favicon.ico">
         <link href="./styles/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="./styles/style.css" rel="stylesheet">
     </head>
@@ -39,11 +40,12 @@
             <div class="header">
                 <div class="row vertical-align">
                     <div class="col-md-4">
-                        <h1>
+                        
                             <img src="./images/logo.jpg" class="img-responsive" 
                                  alt="Laboratoire Galaxy-Swiss Bourdin" 
                                  title="Laboratoire Galaxy-Swiss Bourdin">
-                        </h1>
+                           
+                        
                     </div>
                     <div class="col-md-8">
                         <ul class="nav nav-pills pull-right" role="tablist">
@@ -80,13 +82,13 @@
             } else if ($estConnecte && $userType === 'comptable') {
                 ?>
                 <div class="header" >
-                <div class="row vertical-align">
+                <div class="row vertical-align mb-15">
                     <div class="col-md-4">
-                        <h1>
+                        
                             <img src="./images/logo.jpg" class="img-responsive" 
                                  alt="Laboratoire Galaxy-Swiss Bourdin" 
                                  title="Laboratoire Galaxy-Swiss Bourdin">
-                        </h1>
+                        
                     </div>
                     <div class="col-md-8">
                         <ul class="nav background-comptable pull-right" role="tablist">
@@ -103,7 +105,7 @@
                                 </a>
                             </li>
                             <li <?php if ($uc == 'suivreFrais') { ?>class="active"<?php } ?>>
-                                <a href="index.php?uc=suivreFrais" class="text-comptable">
+                                <a href="index.php?uc=suivreFrais&action=choisirVisiteur" class="text-comptable">
                                     <span class="glyphicon glyphicon-euro"></span>
                                     Suivre le paiement des fiches de frais
                                 </a>
