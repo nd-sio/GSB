@@ -172,6 +172,7 @@ table.border-comptable > tbody > tr > td{
 
 table > tbody > tr.refuse-warning> td{
     border: 2px solid red;
+    animation: fadeOut 3s;
 }
 table > tbody > tr.refuse-warning {
     border: 5px solid red;

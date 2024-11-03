@@ -17,7 +17,8 @@ $validationInfo = filter_input(INPUT_GET, 'validationInfo', FILTER_SANITIZE_FULL
 $lesVisiteurs = $pdo->getAllVisiteurs();
 $lesMois = $pdo->getLesMoisDisponibles($idVisiteurSelectionne);
 
-//on vérifie que le mois courant forcé dans action et selectionné par défaut est dans la liste des mois des fiches du visiteur sinon erreur
+//echo '<pre>' , var_dump("mois dispo",$lesMois,array_column($lesMois, "mois")) , '</pre>';
+//on vérifie que le mois courant forcé (DATE Ym)dans action et selectionné par défaut est dans la liste des mois des fiches du visiteur sinon erreur
 //arraycolumn permet de fabriquer un tableau avec seulement les mois en aaaamm, on extrait la colonne "mois" (suite analyse retour pbo getlesmois avec vardump
 // grâce à l'erreur on le dit dans le viewer pas de fiche pour le mois et à selectionner à la main
 if (in_array($moisSelectionne, array_column($lesMois, "mois"))) {
@@ -36,7 +37,7 @@ if ($erreurMois == false) {
     $numMois = substr($moisSelectionne, 4, 2);
     $nbJustificatifs = $pdo->getNbjustificatifs($idVisiteurSelectionne, $moisSelectionne);
 
-    $arrayValidationFicheFraisInterdite = [];//['VA', 'RB', 'MP'];  // à définir
+    $arrayValidationFicheFraisInterdite = []; //['VA', 'RB', 'MP'];  // à définir
     $validationInterdite = in_array($infoFicheFrais['idEtat'], $arrayValidationFicheFraisInterdite);
 
     $arrayModificationFraisInterdite = []; //['VA','RB', 'MP']; // à définir plus finement car non explicité en détail, peut-on modifier si fiche validée par ex ?
@@ -45,18 +46,17 @@ if ($erreurMois == false) {
     $validationInterdite = true;
     $modificationFraisInterdite = true;
 }
-
+//
 //
 //if ($lesFraisHorsForfait) {
 //
 //
-////echo '<pre>' , var_dump("TYPE les Frais HF l",$lesFraisHorsForfait) , '</pre>';
+//echo '<pre>' , var_dump("TYPE les Frais HF l",$lesFraisHorsForfait) , '</pre>';
 ////echo '<pre>' , var_dump("les Frais HF REFUSES",$lesFraisHorsForfaitRefuses) , '</pre>';
+//  echo '<pre>', var_dump("les Frais HF",  array_column($lesFraisHorsForfait, "libelle")), '</pre>';
 //    echo '<pre>', var_dump("les Frais HF", implode(" ", array_column($lesFraisHorsForfait, "libelle"))), '</pre>';
 //    echo '<pre>', var_dump("contient refusé", str_contains(implode(" ", array_column($lesFraisHorsForfait, "libelle")), "REFUSE")), '</pre>';
 //}
-
-
 
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -64,7 +64,8 @@ switch ($action) {
 
     case 'choisirVisiteurMois':
         //signifie que c'est la première fois qu'on arrive sur la page, on met par défaut premier visiteur 0 et mois courant avec date
-        header('Location: index.php?idVisiteurSelectionne=' . urlencode($lesVisiteurs[0][0])
+        $keyVisiteurPardéfaut = 0;
+        header('Location: index.php?idVisiteurSelectionne=' . urlencode($lesVisiteurs[$keyVisiteurPardéfaut]['id'])
                 . '&moisSelectionne=' . urlencode(date('Ym'))
                 . '&uc=validerFrais');
         break;
@@ -96,7 +97,7 @@ switch ($action) {
         $dateFraisArray = filter_input(INPUT_POST, 'dateFrais', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
         $libelleArray = filter_input(INPUT_POST, 'libelleFrais', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
         $montantArray = filter_input(INPUT_POST, 'montantFrais', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
-       
+
         Utilitaires::valideInfosFrais($dateFraisArray[$idFrais], $libelleArray[$idFrais], $montantArray[$idFrais]);
         if (Utilitaires::nbErreurs() != 0) {
             include PATH_VIEWS . 'v_erreurs.php';
@@ -125,6 +126,7 @@ switch ($action) {
         $pdo->majNbJustificatifs($idVisiteur, $mois, $nbJustificatifs);
         $tousLesLibellesHorsForfait = implode(" ", array_column($lesFraisHorsForfait, "libelle"));
         $contientFraisRefuses = str_contains($tousLesLibellesHorsForfait, "REFUSE");
+        //on aurait pu utiliser directement la fonction SQL : DATE_ADD qui contient la logique de changement d'année
         $moisSuivant = Utilitaires::ajouteUnMois(date('Ym'));
         $ficheMoisSuivantNonCreee = !in_array($moisSuivant, array_column($lesMois, "mois"));
         $informationValidation = ['cas1' => "mois suivant créé et fiches REFUSEES déplacées", 'cas2' => "fiches REFUSEES déplacées", 'cas3' => "fiche validée"];

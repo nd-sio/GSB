@@ -264,7 +264,7 @@ abstract class Utilitaires
     public static function ajouteUnMois($mois): string
     {
         $numAnnee = substr($mois, 0, 4);
-        $numMois = substr($mois, 4, 2);
+        $numMois = substr($mois, 4, 2);//ne garde pas 0 pour les premiers mois
         if ($numMois == '12' ) {
             $numMois = '01';
             $numAnnee = $numAnnee + '1';
@@ -275,12 +275,12 @@ abstract class Utilitaires
         
         
         if (strlen($numMois) == 1) {
-            $numMois = '0' . $numMois;
+            $numMois = '0' . $numMois; //on remet le zéro
         }
         return $numAnnee . $numMois;
     }
     
-    /**
+    /**      INUTILE ON A UTILISE IMPLODE
  * Convert a multi-dimensional array into a single-dimensional array.
  * @author Sean Cannon, LitmusBox.com | seanc@litmusbox.com
  * @param  array $array The multi-dimensional array.

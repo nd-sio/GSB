@@ -107,7 +107,7 @@ $userType = $_SESSION['user_type'] ?? '';
                 ?>
                 <button class="btn btn-success" type="submit" <?php echo $modificationFraisInterdite ? 'disabled':''; ?>>Corriger</button>
                 <button class="btn btn-danger" type="reset" <?php echo $modificationFraisInterdite ? 'disabled':''; ?>>Réinitialiser</button>
-                <?php echo $correctionFraisForfait ? "FRAIS ENREGISTRE" :"" ?>
+                <?php echo $correctionFraisForfait ? "FRAIS ENREGISTRES" :"" ?>
             <?php
             }
             ?>

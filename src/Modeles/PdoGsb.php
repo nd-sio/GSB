@@ -338,7 +338,6 @@ public function majFraisHorsForfait($idVisiteur, $idFrais, $mois, $date, $libell
 
 
 /**
-     * Met à jour la table ligneFraisHorsForfait
      * Met à jour la table ligneFraisHorsForfait pour un visiteur et
      * un mois donné en enregistrant le texte REFUSE et en troncant à droite le libelle
      *

@@ -23,7 +23,7 @@ if ($idVisiteurSelectionne) {
          * Array search renvoie la première clé
         */
 if ($lesFiches) {
-    $key = array_search('VA', array_column($lesFiches, 'idEtat'));
+    $key = array_search('VA', array_column($lesFiches, 'idEtat'));//renvoie la première clé
 }
 
 if ($key) {
@@ -35,7 +35,7 @@ if ($key) {
 }
 
 
-if ($moisSelectionne) {
+if ($moisSelectionne) { // envoyé de la vue avec <a>Voir</a>
       $leMoisAVoir = $moisSelectionne;}
                    
         /*
