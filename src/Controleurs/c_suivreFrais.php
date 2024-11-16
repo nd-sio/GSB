@@ -13,39 +13,42 @@ $lesVisiteurs = $pdo->getAllVisiteurs();
 
 
 if ($idVisiteurSelectionne) {
-    $lesFiches = $pdo->getLastFichesFrais($idVisiteurSelectionne, 5);
+    $lesFiches = $pdo->getLastFichesFrais($idVisiteurSelectionne, 5); // je peux modifier à la main le nb de fiches
 }
-
+//var_dump($lesFiches);
 /*
+         * condition pas de mois selectionné dans la vue avec voir
          * Recherche du mois selectionne correspondant au premier mois "VA"
          * issu du tableau LesFiches, on cherche à l'intérieur du tableau
          * dans la colonne intitulée idEtat, parcours de sous-tableau
          * Array search renvoie la première clé
         */
-if ($lesFiches) {
-    $key = array_search('VA', array_column($lesFiches, 'idEtat'));//renvoie la première clé
+if ($lesFiches and !$moisSelectionne) {
+    $keyPremierVA = array_search('VA', array_column($lesFiches, 'idEtat')); //renvoie la première clé
 }
-
-if ($key) {
-    $leMoisAVoir = $lesFiches[$key]["mois"];
+if ($keyPremierVA) {
+    $leMoisAVoir = $lesFiches[$keyPremierVA]["mois"];
     $pasDeFicheValidee = false;
 } else {
-    $leMoisAVoir = "pas de mois correspondant à une fiche validée";
+    $leMoisAVoir = $lesFiches[2]['mois']; //sinon on voit la fiche 2+1=3 au milieu du tableau
     $pasDeFicheValidee = true;
 }
 
 
+
+
 if ($moisSelectionne) { // envoyé de la vue avec <a>Voir</a>
       $leMoisAVoir = $moisSelectionne;}
-                   
-        /*
-         * Reprise du code du contrôleur etat de frais pour avoir la vue correspondante
+
+      
+         /* Reprise du code du contrôleur etat de frais visiteur pour avoir la vue correspondante
         */
-if ($pasDeFicheValidee === false) {
+if ( $idVisiteurSelectionne) {
         $idVisiteur=$idVisiteurSelectionne;
         $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($idVisiteur, $leMoisAVoir);
         $lesFraisForfait = $pdo->getLesFraisForfait($idVisiteur, $leMoisAVoir);
         $lesInfosFicheFrais = $pdo->getLesInfosFicheFrais($idVisiteur, $leMoisAVoir);
+        $lesIndemnites = $pdo->getLesIndemnitesFrais($idVisiteur);
         $numAnnee = substr($leMoisAVoir, 0, 4);
         $numMois = substr($leMoisAVoir, 4, 2);
         $libEtat = $lesInfosFicheFrais['libEtat'];
@@ -54,7 +57,13 @@ if ($pasDeFicheValidee === false) {
         $dateModif = Utilitaires::dateAnglaisVersFrancais($lesInfosFicheFrais['dateModif']);  
         }
 
+$arrayGenererPDFAutorise = ['VA','RB', 'MP'];       
+        
+echo '<pre>' , var_dump($lesInfosFicheFrais['idEtat']) , '</pre>'; 
 
+        
+//   echo '<pre>' , var_dump($lesIndemnites) , '</pre>';      
+        
             
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -81,6 +90,16 @@ switch ($action) {
 
     break;
 
+
+   case 'genererPDF':
+        $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $idVisiteur = filter_input(INPUT_GET, 'idVisiteurSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+     include PATH_CTRLS . 'c_generer_pdf.php';
+        //include PATH_CTRLS . 'examples/example_00A.php';
+        //header('Location: index.php?idVisiteurSelectionne=' . urlencode($idVisiteur)  . '&uc=suivreFrais');
+
+    break;
+
     
 }
     
@@ -88,7 +107,7 @@ switch ($action) {
     
     require PATH_VIEWS . 'v_listeVisiteur.php';
     require PATH_VIEWS . 'v_listeFiches.php';
-    require PATH_VIEWS . 'v_etatFrais.php';
+    require PATH_VIEWS . 'v_etatFraisComptablePDF.php';
     
 
     

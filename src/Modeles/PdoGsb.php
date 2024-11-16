@@ -276,6 +276,55 @@ class PdoGsb
         return $requetePrepare->fetchAll();
     }
 
+    
+    /**
+     * Retourne tous les montants unitiaires FraisForfait
+     * NOEMIE DESTOMBES
+     * J'ai modifié le tableau en sortie pour que la clé proncipale ne soit plus 0 à 3
+     * mais le nom des idfrais KM, ETP, etc afin de pouvoir accéder plus facilement au montant dans
+     * le visualiseur etat Frais comptable
+     * NOUVEAU KM EST EXTRAIT DE LA NOUVELLE BASE fraiskilometriques
+     * @return un tableau associatif
+     */
+    public function getLesIndemnitesFrais($idVisiteur): array
+    {
+        $requetePrepare = $this->connexion->prepare(
+            'SELECT fraisforfait.id as idfrais, '
+            . 'fraisforfait.montant as montant '  
+            . 'FROM fraisforfait ORDER BY fraisforfait.id'
+        );
+        $requetePrepare->execute();
+        $tableauFrais = $requetePrepare->fetchAll();
+        $requetePrepareBis = $this->connexion->prepare(
+            'SELECT fraiskilometriques.KM '
+            . 'FROM fraiskilometriques '  
+            . 'JOIN  visiteur '
+            . 'ON visiteur.idmoteur = fraiskilometriques.idmoteur '
+            . 'WHERE visiteur.id = :unIdVisiteur'    
+        );
+        $requetePrepareBis->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepareBis->execute();
+        $fraisKilometrique = $requetePrepareBis->fetchAll();
+               
+        $restructured = array();
+        foreach ($tableauFrais as $item) {
+        $idfrais = $item['idfrais'];  // Utilisation de "idfrais" comme clé
+        //unset($item['idfrais']);      // On enlève "idfrais" car il sera utilisé comme clé
+        $restructured[$idfrais] = $item;
+          }
+        $restructured['KM']['montant'] = $fraisKilometrique[0]['KM'];  //je remplace la clé KM par la valeur extraite dans la nouvelle table fraiskilometriques
+        return $restructured;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Met à jour la table ligneFraisForfait pour un visiteur et
      * un mois donné en enregistrant les nouveaux montants
