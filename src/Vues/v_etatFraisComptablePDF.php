@@ -20,10 +20,6 @@
 
 
 <?php $userType = $_SESSION['user_type'] ?? '';
-$keyVisiteur = array_search($idVisiteurSelectionne, array_column($lesVisiteurs, 'id'));
-$prenomNom = $lesVisiteurs[$keyVisiteur]['prenom'] . ' ' . $lesVisiteurs[$keyVisiteur]['nom'];
-
-
 ?>  
 
 <hr>
@@ -69,7 +65,7 @@ $prenomNom = $lesVisiteurs[$keyVisiteur]['prenom'] . ' ' . $lesVisiteurs[$keyVis
         $idFraisForfait = $lesFraisForfait[$i]["idfrais"];
         $libelleFraisForfait = $lesFraisForfait[$i]["libelle"];
         $quantite = $lesFraisForfait[$i]["quantite"];
-        $montantUnitaire = $lesIndemnites["$idFraisForfait"]["montant"]; //ici la clé est l'id vient de pdo restructured
+        $montantUnitaire = $lesIndemnites[$idFraisForfait]["montant"]; //ici la clé est l'id vient de pdo restructured
         $totalLigne = $quantite * $montantUnitaire; // Calcul du total pour la ligne actuelle
 
         ?>

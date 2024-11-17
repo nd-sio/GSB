@@ -43,7 +43,7 @@ if ($moisSelectionne) { // envoyé de la vue avec <a>Voir</a>
       
          /* Reprise du code du contrôleur etat de frais visiteur pour avoir la vue correspondante
         */
-if ( $idVisiteurSelectionne) {
+if ($idVisiteurSelectionne) {
         $idVisiteur=$idVisiteurSelectionne;
         $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($idVisiteur, $leMoisAVoir);
         $lesFraisForfait = $pdo->getLesFraisForfait($idVisiteur, $leMoisAVoir);
@@ -54,15 +54,17 @@ if ( $idVisiteurSelectionne) {
         $libEtat = $lesInfosFicheFrais['libEtat'];
         $montantValide = $lesInfosFicheFrais['montantValide'];
         $nbJustificatifs = $lesInfosFicheFrais['nbJustificatifs'];
-        $dateModif = Utilitaires::dateAnglaisVersFrancais($lesInfosFicheFrais['dateModif']);  
+        $dateModif = Utilitaires::dateAnglaisVersFrancais($lesInfosFicheFrais['dateModif']);
+        $keyVisiteur = array_search($idVisiteurSelectionne, array_column($lesVisiteurs, 'id'));
+        $prenomNom = $lesVisiteurs[$keyVisiteur]['prenom'] . ' ' . $lesVisiteurs[$keyVisiteur]['nom'];
         }
 
 $arrayGenererPDFAutorise = ['VA','RB', 'MP'];       
-        
+
 echo '<pre>' , var_dump($lesInfosFicheFrais['idEtat']) , '</pre>'; 
 
         
-//   echo '<pre>' , var_dump($lesIndemnites) , '</pre>';      
+  echo '<pre>' , var_dump(PATH_CTRLS) , '</pre>';      
         
             
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -94,10 +96,13 @@ switch ($action) {
    case 'genererPDF':
         $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $idVisiteur = filter_input(INPUT_GET, 'idVisiteurSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-     include PATH_CTRLS . 'c_generer_pdf.php';
-        //include PATH_CTRLS . 'examples/example_00A.php';
+       include PATH_CTRLS . 'c_generer_pdf.php';
+      // include PATH_CTRLS ."../libs/TCPDF/examples/example_001.php";
+        
         //header('Location: index.php?idVisiteurSelectionne=' . urlencode($idVisiteur)  . '&uc=suivreFrais');
-
+        //header('/var/www/html/GSB/src/Controleurs/PDFgeneres/titi.pdf');
+        die();
+        
     break;
 
     
