@@ -637,7 +637,15 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
     
     
     
-    
+    /**
+     * Retourne toutes les fiches de frais validées d'un utilisateur
+     *
+     * @param String $idVisiteur ID du visiteur
+     * @param String $mois       Mois sous la forme aaaamm
+     *
+     * @return un tableau avec des champs de jointure entre une fiche de frais
+     *         et la ligne d'état
+     */
     public function getAllFichesFraisValidees($idVisiteur): array
     {
         $requetePrepare = $this->connexion->prepare(
@@ -660,11 +668,12 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
     }
     
     
-    
     /**
-     * Remarque ici l'argument limitNumber est facultatif et à 5 par défaut NONO
+     * 
+     * @param type $idVisiteur
+     * @param type $limitNumber
+     * @return array
      */
-    
     public function getLastFichesFrais($idVisiteur, $limitNumber=5): array
     {
         $requetePrepare = $this->connexion->prepare(
@@ -687,14 +696,6 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
         $leTableau = $requetePrepare->fetchAll();
         return $leTableau;
     }
-    
-    
-    
-    
-    
-    
-    
-    
 
     /**
      * Modifie l'état et la date de modification d'une fiche de frais.
@@ -733,10 +734,7 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
      * @param String $mois       Mois sous la forme aaaamm
      *
      * @return null
-     */
-    
-    
-    
+     */  
     public function creerFicheFrais($idVisiteur, $mois): void
     {
         $dernierMois = $this->dernierMoisSaisi($idVisiteur);
@@ -756,8 +754,14 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
     }
 
     
-    
-     public function deplacerFraisHorsForfaitsRefusesMoisSuivant($idVisiteur, $mois, $moisSuivant): void {
+    /**
+     * 
+     * @param type $idVisiteur
+     * @param type $mois
+     * @param type $moisSuivant
+     * @return void
+     */
+    public function deplacerFraisHorsForfaitsRefusesMoisSuivant($idVisiteur, $mois, $moisSuivant): void {
         $fraisHorsForfait = $this->getLesFraisHorsForfait($idVisiteur, $mois);
 
         foreach ($fraisHorsForfait as $unFrais) {
@@ -768,6 +772,42 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
     }
       
     
-    
+    /**
+     * Ajoute le fichier PDF créé à la fiche frais de l'utilisateur
+     *
+     * 
+     * @param String $idVisiteur
+     * @param String $mois
+     * @param String $fichier
+     */
+    public function creerFichierPDF($idVisiteur, $mois, $fichier): void
+    {
+        $requetePrepare = $this->connexion->prepare(
+            'UPDATE fichefrais '
+            . 'SET datePDF = now(), '
+            . 'contenuPDF = :unFichier '   
+            . 'WHERE fichefrais.idvisiteur = :unIdVisiteur '
+            . 'AND fichefrais.mois = :unMois'   
+        );
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unFichier', $fichier, PDO::PARAM_LOB);
+        $requetePrepare->execute();
+
+    }
+   
+    /**
+     * Récupère le fichier PDF si créé, sinon renvoie false
+     *
+     * Cette méthode est utilisée pour ne générer qu'une seule fois le PDF
+     * (opération GREEN-IT)
+     * 
+     * @param String $idVisiteur
+     * @param String $mois
+     * @param String $fichier
+     */
+    // public function getFichierPDF($idVisiteur, $mois)
+    // if() {}
+    // else() {}
     
 }
