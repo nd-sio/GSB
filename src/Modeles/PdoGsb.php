@@ -795,19 +795,48 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
         $requetePrepare->execute();
 
     }
-   
-    /**
-     * Récupère le fichier PDF si créé, sinon renvoie false
+    
+     /**
+     * Récupère le fichier PDF associé à une fiche frais, ou renvoie false s'il n'existe pas
      *
      * Cette méthode est utilisée pour ne générer qu'une seule fois le PDF
-     * (opération GREEN-IT)
+     * (orientation GREEN-IT)
      * 
      * @param String $idVisiteur
      * @param String $mois
-     * @param String $fichier
+     * @return mixed Le fichier PDF sous forme de flux ou false s'il n'existe pas
      */
-    // public function getFichierPDF($idVisiteur, $mois)
-    // if() {}
-    // else() {}
+    public function existeFichierPDF($idVisiteur, $mois): bool
+    {
+        $requetePrepare = $this->connexion->prepare(
+            'SELECT datePDF '
+            . 'FROM fichefrais '
+            . 'WHERE fichefrais.idvisiteur = :unIdVisiteur '
+            . 'AND fichefrais.mois = :unMois '
+        );
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        $result = $requetePrepare->fetch();
+        return $result["datePDF"] ? true : false;
+    }
+    
+    
+public function getFichierPDF($idVisiteur, $mois)
+    {
+        $requetePrepare = $this->connexion->prepare(
+            'SELECT contenuPDF '
+            . 'FROM fichefrais '
+            . 'WHERE fichefrais.idvisiteur = :unIdVisiteur '
+            . 'AND fichefrais.mois = :unMois '
+            . 'AND fichefrais.contenuPDF IS NOT NULL'
+        );
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->execute();
+
+        $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['contenuPDF'] : false;
+    }
     
 }

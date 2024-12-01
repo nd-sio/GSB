@@ -26,7 +26,7 @@
 <div class="panel panel-primary <?php echo $userType == 'comptable' ? "panel-comptable border-comptable" : "" ;?>">
          
       <div class="panel-heading">Fiche de frais du mois 
-        <?php echo $numMois . '-' . $numAnnee ?> : </div>
+        <?php echo $numMois . '-' . $numAnnee ?>  pour le visiteur  <?php echo $prenomNom; ?></div>
           
     <div class="panel-body">
         <strong><u>Etat :</u></strong> <?php echo $libEtat ?>
@@ -108,10 +108,21 @@
             
             <tr >
                 <td colspan="2" class='text-center'><?php if (in_array($lesInfosFicheFrais['idEtat'], $arrayGenererPDFAutorise)) : ?>
-                        <a href="index.php?uc=suivreFrais&action=genererPDF&idVisiteurSelectionne=<?php echo $idVisiteurSelectionne; ?>&moisSelectionne=<?php echo $mois; ?>"
-                           class= "btn btn-primary" >
-                            générer PDF
-                        </a>                    
+                        <?php if ($existePDF) { ?>
+                            <a href="index.php?uc=suivreFrais&action=visualiserPDF&idVisiteurSelectionne=<?php echo $idVisiteurSelectionne; ?>&moisSelectionne=<?php echo $leMoisAVoir; ?>"
+                               class= "btn btn-primary" >
+                                visualiser PDF
+                            </a>
+                            <?php
+                        } else {
+                            ?>
+                      <a href="index.php?uc=suivreFrais&action=genererPDF&idVisiteurSelectionne=<?php echo $idVisiteurSelectionne; ?>&moisSelectionne=<?php echo $leMoisAVoir; ?>"
+                               class= "btn btn-primary" >
+                                générer PDF
+                            </a> 
+
+                        <?php } ?> 
+
                     <?php endif; ?></td>      
                 <td   class="text-right"><strong>TOTAL   <?php echo $leMoisAVoir ?></strong></td>
                 <td><strong><?php echo number_format($montantValide, 2, ',', ' ') ?></strong></td>

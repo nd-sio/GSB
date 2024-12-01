@@ -10,6 +10,7 @@ use Outils\Utilitaires;
 $idVisiteurSelectionne = filter_input(INPUT_GET, 'idVisiteurSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $moisSelectionne = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $lesVisiteurs = $pdo->getAllVisiteurs();
+$existePDF = $pdo->existefichierPDF($idVisiteurSelectionne, $moisSelectionne);
 
 
 if ($idVisiteurSelectionne) {
@@ -64,7 +65,7 @@ $arrayGenererPDFAutorise = ['VA','RB', 'MP'];
 echo '<pre>' , var_dump($lesInfosFicheFrais['idEtat']) , '</pre>'; 
 
         
-  echo '<pre>' , var_dump(PATH_CTRLS) , '</pre>';      
+  echo '<pre>' , var_dump($existePDF) , '</pre>';      
         
             
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -92,16 +93,19 @@ switch ($action) {
 
     break;
 
-
    case 'genererPDF':
         $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $idVisiteur = filter_input(INPUT_GET, 'idVisiteurSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
        include PATH_CTRLS . 'c_generer_pdf.php';
-      // include PATH_CTRLS ."../libs/TCPDF/examples/example_001.php";
-        
-        //header('Location: index.php?idVisiteurSelectionne=' . urlencode($idVisiteur)  . '&uc=suivreFrais');
-        //header('/var/www/html/GSB/src/Controleurs/PDFgeneres/titi.pdf');
         die();
+        
+    case 'visualiserPDF':
+        $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $idVisiteur = filter_input(INPUT_GET, 'idVisiteurSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $pdfContent = $pdo->getFichierPDF($idVisiteur, $mois);
+        var_dump($pdfContent);
+        header('Content-Disposition: inline; filename=""');
+        exit;
         
     break;
 

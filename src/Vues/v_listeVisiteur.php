@@ -22,7 +22,7 @@
 
 <div class="container">
     <div>
-     Le visiteur sélectionné est  :   <?php echo $idVisiteurSelectionne; ?>
+     
         
     </div>
         

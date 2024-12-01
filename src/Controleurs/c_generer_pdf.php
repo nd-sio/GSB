@@ -62,7 +62,7 @@ $html = <<<EOD
     </tr>
     <tr>
         <td><strong>Mois :</strong></td>
-        <td>$mois</td>
+        <td>$leMoisAVoir</td>
     </tr>
 </table>
 <br><br>
@@ -143,15 +143,13 @@ $imageFile = '/var/www/html/GSB/public/images/signature.png';
 
 // Sortie du fichier PDF
 //$pdf->Output('Remboursement_Frais_202407.pdf', 'I');
-$fichier = '/var/www/html/GSB/src/PDFgeneres/'. $prenomNom . '_' . $mois .'.pdf';
+$fichier = '/var/www/html/GSB/src/PDFgeneres/'. $prenomNom . '_' . $leMoisAVoir .'.pdf';
 $pdf->Output($fichier, 'F');
 $permissions = 0755;
 chmod($fichier, $permissions);
 //$fichier = $_FILES[]; // Supposons que le fichier a été uploadé
 $contenu = file_get_contents($fichier);
-$pdo->creerFichierPDF($idVisiteur, $mois, $fichier);
-
-//$pdo->getFichierPDF($idVisiteur, $mois);
+$pdo->creerFichierPDF($idVisiteur, $leMoisAVoir, $fichier);
 
 
 

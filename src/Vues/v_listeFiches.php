@@ -40,7 +40,7 @@
             <thead>
                 <tr>
                     <th class="mois">Mois</th>
-                    <th class="nbJustificatifs">nombre de justificatifs</th>  
+                    <th class="nbJustificatifs">Nombre de justificatifs</th>  
                     <th class="montantValide">Montant validé</th>
                     <th class="dateModif">Date de modification</th>
                     <th class="idEtat">Etat de la fiche</th>
