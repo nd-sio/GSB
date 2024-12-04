@@ -106,7 +106,7 @@
             
             <tr >
         <td  colspan="2" class="text-right"><strong>TOTAL   <?php echo $mois ?></strong></td>
-        <td><strong><?php echo number_format($montantValide, 2, ',', ' ') ?></strong></td>
+        <td><strong><?php echo $montantValide ?></strong></td>
     </tr>
     </table>
 </div>

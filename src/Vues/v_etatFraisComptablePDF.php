@@ -31,7 +31,7 @@
     <div class="panel-body">
         <strong><u>Etat :</u></strong> <?php echo $libEtat ?>
         depuis le <?php echo $dateModif ?> <br> 
-        <strong><u>Montant validé :</u></strong> <?php echo $montantValide ?>
+        <strong><u>Montant validé :</u></strong> <?php echo $lesInfosFicheFrais['montantValide'] ?>
     </div>
 </div>
 
@@ -125,7 +125,7 @@
 
                     <?php endif; ?></td>      
                 <td   class="text-right"><strong>TOTAL   <?php echo $leMoisAVoir ?></strong></td>
-                <td><strong><?php echo number_format($montantValide, 2, ',', ' ') ?></strong></td>
+                <td><strong><?php echo $lesInfosFicheFrais['montantValide'] ?></strong></td>
             </tr>
     
     

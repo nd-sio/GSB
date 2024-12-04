@@ -26,13 +26,13 @@ if ($idVisiteurSelectionne) {
         */
 if ($lesFiches and !$moisSelectionne) {
     $keyPremierVA = array_search('VA', array_column($lesFiches, 'idEtat')); //renvoie la première clé
-}
-if ($keyPremierVA) {
-    $leMoisAVoir = $lesFiches[$keyPremierVA]["mois"];
-    $pasDeFicheValidee = false;
-} else {
-    $leMoisAVoir = $lesFiches[2]['mois']; //sinon on voit la fiche 2+1=3 au milieu du tableau
-    $pasDeFicheValidee = true;
+    if ($keyPremierVA) {
+        $leMoisAVoir = $lesFiches[$keyPremierVA]["mois"];
+        $pasDeFicheValidee = false;
+    } else {
+        $leMoisAVoir = $lesFiches[2]['mois']; //sinon on voit la fiche 2+1=3 au milieu du tableau
+        $pasDeFicheValidee = true;
+    }
 }
 
 
@@ -53,7 +53,7 @@ if ($idVisiteurSelectionne) {
         $numAnnee = substr($leMoisAVoir, 0, 4);
         $numMois = substr($leMoisAVoir, 4, 2);
         $libEtat = $lesInfosFicheFrais['libEtat'];
-        $montantValide = $lesInfosFicheFrais['montantValide'];
+        $montantValide = $lesInfosFicheFrais['libEtat'];
         $nbJustificatifs = $lesInfosFicheFrais['nbJustificatifs'];
         $dateModif = Utilitaires::dateAnglaisVersFrancais($lesInfosFicheFrais['dateModif']);
         $keyVisiteur = array_search($idVisiteurSelectionne, array_column($lesVisiteurs, 'id'));
@@ -62,8 +62,9 @@ if ($idVisiteurSelectionne) {
 
 $arrayGenererPDFAutorise = ['VA','RB', 'MP'];       
 
-echo '<pre>' , var_dump($lesInfosFicheFrais['idEtat']) , '</pre>'; 
-
+echo '<pre>' , var_dump($lesInfosFicheFrais['montantValide']) , '</pre>';
+echo '<pre>' , var_dump($lesInfosFicheFrais) , '</pre>'; 
+echo '<pre>' , var_dump($montantValide) , '</pre>'; 
         
   echo '<pre>' , var_dump($existePDF) , '</pre>';      
         
@@ -76,6 +77,12 @@ switch ($action) {
         $keyVisiteurPardéfaut = 0;
         header('Location: index.php?idVisiteurSelectionne=' .  urlencode($lesVisiteurs[$keyVisiteurPardéfaut]['id'])  . '&uc=suivreFrais');
         break;
+    
+    case 'voirFiche':      
+        $keyVisiteurPardéfaut = 0;
+        header('Location: index.php?uc=suivreFrais&idVisiteurSelectionne=' . urlencode($idVisiteur)  . '&moisSelectionne=' . urlencode($moisSelectionne));
+        break;
+    
     
     case 'mettreEnPaiementFiche':
         $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -102,10 +109,10 @@ switch ($action) {
     case 'visualiserPDF':
         $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $idVisiteur = filter_input(INPUT_GET, 'idVisiteurSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $pdfContent = $pdo->getFichierPDF($idVisiteur, $mois);
-        var_dump($pdfContent);
-        header('Content-Disposition: inline; filename=""');
-        exit;
+        $pdfContent = $pdo->getFichierPDF($idVisiteur, $moisSelectionne);
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="document.pdf"');
+        header('Content-Length: ' . strlen($pdfContent));
         
     break;
 
