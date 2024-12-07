@@ -62,11 +62,10 @@ if ($idVisiteurSelectionne) {
 
 $arrayGenererPDFAutorise = ['VA','RB', 'MP'];       
 
-echo '<pre>' , var_dump($lesInfosFicheFrais['montantValide']) , '</pre>';
-echo '<pre>' , var_dump($lesInfosFicheFrais) , '</pre>'; 
-echo '<pre>' , var_dump($montantValide) , '</pre>'; 
-        
-  echo '<pre>' , var_dump($existePDF) , '</pre>';      
+//echo '<pre>' , var_dump($lesInfosFicheFrais['montantValide']) , '</pre>';
+//echo '<pre>' , var_dump($lesInfosFicheFrais) , '</pre>'; 
+//echo '<pre>' , var_dump($montantValide) , '</pre>'; 
+//echo '<pre>' , var_dump($existePDF) , '</pre>';      
         
             
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS);

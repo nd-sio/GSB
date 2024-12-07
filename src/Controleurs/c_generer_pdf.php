@@ -22,19 +22,6 @@ $pdf->setPrintFooter(false);
 // Définit les marges
 $pdf->SetMargins(15, 15, 15);
 
-// Associer la fonction à l'événement Header
-//$pdf->setHeaderCallback('customHeader');
-//// Fonction pour personnaliser l'en-tête
-//
-//
-//function customHeader($pdf) {
-//    // Positionnement de l'image
-//    $imageWidth = 50;
-//    $pageWidth = $pdf->getPageWidth();
-//    $xPosition = ($pageWidth - $imageWidth) / 2;
-//    $pdf->Image('/var/www/html/GSB/public/images/logo.jpg', $xPosition, 10, $imageWidth, 0, 'JPG', '', 'T', true, 300);
-//}
-
 // Ajouter une page
 $pdf->AddPage();
 
@@ -150,4 +137,4 @@ $permissions = 0755;
 chmod($fichier, $permissions);
 //$fichier = $_FILES[]; // Supposons que le fichier a été uploadé
 $contenu = file_get_contents($fichier);
-$pdo->creerFichierPDF($idVisiteur, $leMoisAVoir, $fichier);
+$pdo->creerFichierPDF($idVisiteur, $leMoisAVoir, $contenu);
