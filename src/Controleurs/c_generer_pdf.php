@@ -1,7 +1,6 @@
 <?php
 
 ob_start();
-// Include the main TCPDF library (search for installation path).
 
 require_once(__DIR__ . '/../libs/TCPDF/tcpdf.php');
 
@@ -25,20 +24,23 @@ $pdf->SetMargins(15, 15, 15);
 // Ajouter une page
 $pdf->AddPage();
 
-// Ajouter une image d'en-tête centrée
-$imageWidth = 50; // Largeur de l'image en millimètres
-$pageWidth = $pdf->getPageWidth(); // Largeur totale de la page
-$xPosition = ($pageWidth - $imageWidth) / 2; // Calcul de la position centrée
+// Ajouter l'image
+$imageWidth = 30; // Largeur de l'image en millimètres
+$imageHeight = 30; // Hauteur de l'image
 $imageFile = '/var/www/html/GSB/public/images/logo.jpg';
-$pdf->Image($imageFile, $xPosition, 10, 50, 0, 'JPG', '', 'T', true, 300);
+$pdf->Image($imageFile, 15, $pdf->GetY(), $imageWidth, $imageHeight);
 
-// Déplacer le curseur en y après l'image
-$pdf->SetY(10 + 40); // 10 est la position de l'image, 50 est sa hauteur
+// Positionner le texte à droite de l'image
+$pdf->SetFont('Helvetica', 'B', 16); // Police et taille du texte
+$pdf->SetXY(15 + $imageWidth + 10, $pdf->GetY()); // Position après l'image avec un espace de 10 mm
+$pdf->Cell(0, $imageHeight, 'REMBOURSEMENT DE FRAIS ENGAGÉS', 0, 1, 'L');
+$pdf->setFont('Helvetica', '', 12);
+
 
 // Contenu HTML pour le PDF
 $html = <<<EOD
 
-<h1 style="text-align: center;">REMBOURSEMENT DE FRAIS ENGAGÉS</h1>
+
 <br><br>
 <table>
     <tr>
@@ -133,8 +135,9 @@ $pdf->Image($imageFile2, 140, $pdf->GetY() + 5, 50, 20, 'PNG', '', 'T', false, 3
 // Sortie du fichier PDF
 $fichier = '/var/www/html/GSB/src/PDFgeneres/'. $prenomNom . '_' . $leMoisAVoir .'.pdf';
 $pdf->Output($fichier, 'D');
+$pdf->Output($fichier, 'F');
 $permissions = 0755;
 chmod($fichier, $permissions);
-//$fichier = $_FILES[]; // Supposons que le fichier a été uploadé
 $contenu = file_get_contents($fichier);
 $pdo->creerFichierPDF($idVisiteur, $leMoisAVoir, $contenu);
+

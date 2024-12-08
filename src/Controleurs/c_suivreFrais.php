@@ -87,7 +87,7 @@ switch ($action) {
         $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $idVisiteur = filter_input(INPUT_GET, 'idVisiteurSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $pdo->majEtatFicheFrais($idVisiteur, $mois, 'MP');
-         header('Location: index.php?idVisiteurSelectionne=' . urlencode($idVisiteur)  . '&uc=suivreFrais');
+        header('Location: index.php?idVisiteurSelectionne=' . urlencode($idVisiteur)  . '&uc=suivreFrais');
 
     break;
     
@@ -95,15 +95,16 @@ switch ($action) {
         $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $idVisiteur = filter_input(INPUT_GET, 'idVisiteurSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $pdo->majEtatFicheFrais($idVisiteur, $mois, 'RB');
-         header('Location: index.php?idVisiteurSelectionne=' . urlencode($idVisiteur)  . '&uc=suivreFrais');
+        header('Location: index.php?idVisiteurSelectionne=' . urlencode($idVisiteur)  . '&uc=suivreFrais');
 
     break;
 
-   case 'genererPDF':
+    case 'genererPDF':
         $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $idVisiteur = filter_input(INPUT_GET, 'idVisiteurSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-       include PATH_CTRLS . 'c_generer_pdf.php';
-        die();
+        include PATH_CTRLS . 'c_generer_pdf.php';
+    break;    
+
         
     case 'visualiserPDF':
         $mois = filter_input(INPUT_GET, 'moisSelectionne', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -111,11 +112,9 @@ switch ($action) {
         $pdfContent = $pdo->getFichierPDF($idVisiteur, $moisSelectionne);
         header('Content-Type: application/pdf');
         header('Content-Disposition: inline; filename="document.pdf"');
-        header('Content-Length: ' . strlen($pdfContent));
-        
-    break;
+        echo $pdfContent;
 
-    
+        break;
 }
     
     
