@@ -1,5 +1,5 @@
 # Laboratoire Galaxy-Swiss Bourdin 
-![Logo GSB](public/images/logo.jpg "Logo de l'application GSB")
+![Logo GSB](public/favicon.ico "Logo de l'application GSB")
 
 Cette application est développée dans le cadre des Ateliers de Professionnalisation du BTS SIO SLAM pour la session 2025. Elle vise à centraliser et uniformiser la gestion des frais de déplacement, de restauration et d'hébergement des visiteurs médicaux du laboratoire Galaxy Swiss Bourdin (GSB).
 
