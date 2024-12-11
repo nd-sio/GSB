@@ -17,8 +17,7 @@ $validationInfo = filter_input(INPUT_GET, 'validationInfo', FILTER_SANITIZE_FULL
 $lesVisiteurs = $pdo->getAllVisiteurs();
 $lesMois = $pdo->getLesMoisDisponibles($idVisiteurSelectionne);
 
-//echo '<pre>' , var_dump("mois dispo",$lesMois,array_column($lesMois, "mois")) , '</pre>';
-//on vérifie que le mois courant forcé (DATE Ym)dans action et selectionné par défaut est dans la liste des mois des fiches du visiteur sinon erreur
+//on vérifie que le mois courant forcé (DATE Ym) dans action et sélectionné par défaut est dans la liste des mois des fiches du visiteur sinon erreur
 //arraycolumn permet de fabriquer un tableau avec seulement les mois en aaaamm, on extrait la colonne "mois" (suite analyse retour pbo getlesmois avec vardump
 // grâce à l'erreur on le dit dans le viewer pas de fiche pour le mois et à selectionner à la main
 if (in_array($moisSelectionne, array_column($lesMois, "mois"))) {
@@ -37,26 +36,15 @@ if ($erreurMois == false) {
     $numMois = substr($moisSelectionne, 4, 2);
     $nbJustificatifs = $pdo->getNbjustificatifs($idVisiteurSelectionne, $moisSelectionne);
 
-    $arrayValidationFicheFraisInterdite = []; //['VA', 'RB', 'MP'];  // à définir
+    $arrayValidationFicheFraisInterdite = [];
     $validationInterdite = in_array($infoFicheFrais['idEtat'], $arrayValidationFicheFraisInterdite);
 
-    $arrayModificationFraisInterdite = []; //['VA','RB', 'MP']; // à définir plus finement car non explicité en détail, peut-on modifier si fiche validée par ex ?
+    $arrayModificationFraisInterdite = [];
     $modificationFraisInterdite = in_array($infoFicheFrais['idEtat'], $arrayModificationFraisInterdite);
 } else {
     $validationInterdite = true;
     $modificationFraisInterdite = true;
 }
-//
-//
-//if ($lesFraisHorsForfait) {
-//
-//
-//echo '<pre>' , var_dump("TYPE les Frais HF l",$lesFraisHorsForfait) , '</pre>';
-////echo '<pre>' , var_dump("les Frais HF REFUSES",$lesFraisHorsForfaitRefuses) , '</pre>';
-//  echo '<pre>', var_dump("les Frais HF",  array_column($lesFraisHorsForfait, "libelle")), '</pre>';
-//    echo '<pre>', var_dump("les Frais HF", implode(" ", array_column($lesFraisHorsForfait, "libelle"))), '</pre>';
-//    echo '<pre>', var_dump("contient refusé", str_contains(implode(" ", array_column($lesFraisHorsForfait, "libelle")), "REFUSE")), '</pre>';
-//}
 
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -138,10 +126,6 @@ switch ($action) {
                 $keyValidation = 'cas1';
                 break;
             case ($contientFraisRefuses === true && $ficheMoisSuivantNonCreee === false) :
-                echo '<pre>', var_dump("les frais sont sensés être reportés", $moisSuivant), '</pre>';
-                echo '<pre>', var_dump("id vis", $idVisiteur), '</pre>';
-                echo '<pre>', var_dump("mois", $mois), '</pre>';
-                echo '<pre>', var_dump("mois suivant", $moisSuivant), '</pre>';
                 $pdo->deplacerFraisHorsForfaitsRefusesMoisSuivant($idVisiteur, $mois, $moisSuivant);
                 $keyValidation = 'cas2';
                 break;
@@ -149,7 +133,6 @@ switch ($action) {
             default:
                 $keyValidation = 'cas3';
         }
-        //var_dump("va passer par ici !", $keyValidation);
         $pdo->majEtatFicheFrais($idVisiteur, $mois, 'VA');
         header('Location: index.php?idVisiteurSelectionne=' . urlencode($idVisiteur)
                 . '&moisSelectionne=' . urlencode($mois)
