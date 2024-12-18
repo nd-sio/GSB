@@ -82,7 +82,7 @@ class PdoGsb
         return self::$instance;
     }
     
-      /**
+     /**
      * Retourne la liste de tous les visiteurs
      *
      * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
@@ -98,8 +98,8 @@ class PdoGsb
     return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
 }
 
-  /**
-     * Retourne la liste de tous les comptables
+    /**
+     * Retourne la liste de tous les comptables avant hashage des mots de passe
      *
      * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
      */
@@ -114,8 +114,124 @@ class PdoGsb
     return $result ?: [];  // Retourner un tableau vide si aucun comptable n'est trouvé
 }
 
+
     /**
-     * Retourne les informations d'un visiteur
+     * Hashe les mots de passes de tous les visiteurs
+     * à n'utiliser qu'une seule fois
+     *
+     * @return ne retourne rien
+     */
+    public function transformVisiteurMdp(): void {
+        $listeVisiteurs = $this->getAllVisiteurs();
+        foreach ($listeVisiteurs as $visiteur) {
+            $mdp = $visiteur['mdp'];
+            $id = $visiteur['id'];
+            $hashMdp = password_hash($mdp, PASSWORD_DEFAULT);
+            $req = $this->connexion->prepare('UPDATE visiteur SET mdp= :hashMdp WHERE id= :unId');
+            $req->bindParam(':hashMdp', $hashMdp, PDO::PARAM_STR);
+            $req->bindParam(':unId', $id, PDO::PARAM_STR);
+            $req->execute();
+        }
+    }
+
+    /**
+     * Hashe les mots de passes de tous les comptables
+     * à n'utiliser qu'une seule fois
+     *
+     * @return ne retourne rien
+     */
+    public function transformComptableMdp(): void {
+        $listeVisiteurs = $this->getAllComptables();
+        foreach ($listeVisiteurs as $visiteur) {
+            $mdp = $visiteur['mdp'];
+            $id = $visiteur['id'];
+            $hashMdp = password_hash($mdp, PASSWORD_DEFAULT);
+            $req = $this->connexion->prepare('UPDATE comptable SET mdp= :hashMdp WHERE id= :unId');
+            $req->bindParam(':hashMdp', $hashMdp, PDO::PARAM_STR);
+            $req->bindParam(':unId', $id, PDO::PARAM_STR);
+            $req->execute();
+        }
+    }
+
+    /**
+     * Retourne le mot de passe hashé d'un visiteur
+     *
+     * @param String $login Login du visiteur
+     *
+     * @return le mot de passe hashé d'un visiteur
+     */
+    public function getMdpVisiteur($login) {
+        $requetePrepare = $this->connexion->prepare(
+                'SELECT mdp '
+                . 'FROM visiteur '
+                . 'WHERE visiteur.login = :unLogin'
+        );
+        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        return $requetePrepare->fetch(PDO::FETCH_OBJ)->mdp;
+    }
+
+    /**
+     * Retourne le mot de passe hashé d'un comptable
+     *
+     * @param String $login Login du comptable
+     *
+     * @return le mot de passe hashé d'un comptable
+     */
+    public function getMdpComptable($login) {
+        $requetePrepare = $this->connexion->prepare(
+                'SELECT mdp '
+                . 'FROM comptable '
+                . 'WHERE comptable.login = :unLogin'
+        );
+        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        return $requetePrepare->fetch(PDO::FETCH_OBJ)->mdp;
+    }
+
+    /**
+     * Retourne les informations d'un visiteur après hashage des mots de passe
+     *
+     * @param String $login Login du visiteur
+     *
+     * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
+     */
+    public function getInfosVisiteur2($login): array {
+        $requetePrepare = $this->connexion->prepare(
+                'SELECT visiteur.id AS id, visiteur.nom AS nom, '
+                . 'visiteur.prenom AS prenom '
+                . 'FROM visiteur '
+                . 'WHERE visiteur.login = :unLogin'
+        );
+        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
+        return $result ?: [];
+    }
+
+    /**
+     * Retourne les informations d'un comptable après hashage des mots de passe
+     *
+     * @param String $login Login du comptable
+     *
+     * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
+     */
+    public function getInfosComptable2($login): array {
+        $requetePrepare = $this->connexion->prepare(
+                'SELECT comptable.id AS id, comptable.nom AS nom, '
+                . 'comptable.prenom AS prenom '
+                . 'FROM comptable '
+                . 'WHERE comptable.login = :unLogin'
+        );
+        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+        $requetePrepare->execute();
+
+        $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
+        return $result ?: [];
+    }
+
+    /**
+     * Retourne les informations d'un visiteur avant hashage des mots de passe
      *
      * @param String $login Login du visiteur
      * @param String $mdp   Mot de passe du visiteur
@@ -138,92 +254,9 @@ class PdoGsb
     return $result ?: [];  // Retourner un tableau vide si aucun visiteur n'est trouvé
 }
 
-public function transformVisiteurMdp(): void 
- {
-    $listeVisiteurs = $this->getAllVisiteurs();
-    foreach ($listeVisiteurs as $visiteur) {
-        $mdp = $visiteur['mdp'];
-        $id = $visiteur['id'];
-        $hashMdp = password_hash($mdp, PASSWORD_DEFAULT);
-        $req = $this->connexion->prepare('UPDATE visiteur SET mdp= :hashMdp WHERE id= :unId');
-        $req->bindParam(':hashMdp', $hashMdp, PDO::PARAM_STR);
-        $req->bindParam(':unId', $id, PDO::PARAM_STR);
-        $req->execute();
- }
-}
-
-public function transformComptableMdp(): void 
- {
-    $listeVisiteurs = $this->getAllComptables();
-    foreach ($listeVisiteurs as $visiteur) {
-        $mdp = $visiteur['mdp'];
-        $id = $visiteur['id'];
-        $hashMdp = password_hash($mdp, PASSWORD_DEFAULT);
-        $req = $this->connexion->prepare('UPDATE comptable SET mdp= :hashMdp WHERE id= :unId');
-        $req->bindParam(':hashMdp', $hashMdp, PDO::PARAM_STR);
-        $req->bindParam(':unId', $id, PDO::PARAM_STR);
-        $req->execute();
- }
-}
-
-// fonction 2 (avec mdp hashé)
-
-public function getInfosVisiteur2($login): array
-{
-    $requetePrepare = $this->connexion->prepare(
-        'SELECT visiteur.id AS id, visiteur.nom AS nom, '
-        . 'visiteur.prenom AS prenom '
-        . 'FROM visiteur '
-        . 'WHERE visiteur.login = :unLogin'
-    );
-    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-    $requetePrepare->execute();
-
-    $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
-    return $result ?: [];
-}
-
-public function getMdpVisiteur($login) {
-    $requetePrepare = $this->connexion->prepare(
-        'SELECT mdp '
-        . 'FROM visiteur '
-        . 'WHERE visiteur.login = :unLogin'
-    );
-    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-    $requetePrepare->execute();
-    return $requetePrepare->fetch(PDO::FETCH_OBJ)->mdp;
-}
-
-public function getInfosComptable2($login): array
-{
-    $requetePrepare = $this->connexion->prepare(
-        'SELECT comptable.id AS id, comptable.nom AS nom, '
-        . 'comptable.prenom AS prenom '
-        . 'FROM comptable '
-        . 'WHERE comptable.login = :unLogin'
-    );
-    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-    $requetePrepare->execute();
-
-    $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
-    return $result ?: [];
-}
-
-public function getMdpComptable($login) {
-    $requetePrepare = $this->connexion->prepare(
-        'SELECT mdp '
-        . 'FROM comptable '
-        . 'WHERE comptable.login = :unLogin'
-    );
-    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-    $requetePrepare->execute();
-    return $requetePrepare->fetch(PDO::FETCH_OBJ)->mdp;
-}
-
-
     
     /**
-     * Retourne les informations d'un comptable
+     * Retourne les informations d'un comptable avant hashage des mots de passe
      *
      * @param String $login Login du comptable
      * @param String $mdp   Mot de passe du comptable
@@ -231,22 +264,21 @@ public function getMdpComptable($login) {
      * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
      */
     public function getInfosComptable($login, $mdp): array
-{
+ {
     $requetePrepare = $this->connexion->prepare(
-        'SELECT comptable.id AS id, comptable.nom AS nom, '
-        . 'comptable.prenom AS prenom '
-        . 'FROM comptable '
-        . 'WHERE comptable.login = :unLogin AND comptable.mdp = :unMdp'
-    );
-    $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-    $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
-    $requetePrepare->execute();
+                'SELECT comptable.id AS id, comptable.nom AS nom, '
+                . 'comptable.prenom AS prenom '
+                . 'FROM comptable '
+                . 'WHERE comptable.login = :unLogin AND comptable.mdp = :unMdp'
+        );
+        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
+        $requetePrepare->execute();
 
-    // Retourner un tableau vide si aucun résultat n'est trouvé
-    $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
-    return $result ?: [];
-}
-
+        // Retourner un tableau vide si aucun résultat n'est trouvé
+        $result = $requetePrepare->fetch(PDO::FETCH_ASSOC);
+        return $result ?: [];
+    }
 
     /**
      * Retourne sous forme d'un tableau associatif toutes les lignes de frais
@@ -350,10 +382,12 @@ public function getMdpComptable($login) {
     /**
      * Retourne tous les montants unitiaires FraisForfait
      * NOEMIE DESTOMBES
-     * J'ai modifié le tableau en sortie pour que la clé proncipale ne soit plus 0 à 3
+     * J'ai modifié le tableau en sortie pour que la clé principale ne soit plus un chiffre (0 à 3)
      * mais le nom des idfrais KM, ETP, etc afin de pouvoir accéder plus facilement au montant dans
      * le visualiseur etat Frais comptable
-     * NOUVEAU KM EST EXTRAIT DE LA NOUVELLE BASE fraiskilometriques
+     * NOUVEAU KM EST EXTRAIT DE LA NOUVELLE BASE fraiskilometriques :
+     * on joint la base fraiskilometrique selon le modèle de voiture du visiteur
+     * @param String id du visiteur
      * @return un tableau associatif
      */
     public function getLesIndemnitesFrais($idVisiteur): array
@@ -378,11 +412,10 @@ public function getMdpComptable($login) {
                
         $restructured = array();
         foreach ($tableauFrais as $item) {
-        $idfrais = $item['idfrais'];  // Utilisation de "idfrais" comme clé
-        //unset($item['idfrais']);      // On enlève "idfrais" car il sera utilisé comme clé
-        $restructured[$idfrais] = $item;
+        $idfrais = $item['idfrais'];  
+        $restructured[$idfrais] = $item; // definition de "idfrais" comme clé
           }
-        $restructured['KM']['montant'] = $fraisKilometrique[0]['KM'];  //je remplace la clé KM par la valeur extraite dans la nouvelle table fraiskilometriques
+        $restructured['KM']['montant'] = $fraisKilometrique[0]['KM'];  //je remplace la valeur de la clé KM nulle par défaut par la valeur extraite dans la nouvelle table fraiskilometriques
         return $restructured;
     }
 
@@ -550,7 +583,7 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
      * Crée une nouvelle fiche de frais et les lignes de frais au forfait
      * pour un visiteur et un mois donnés
      *
-     * Récupère le dernier mois en cours de traitement, met à 'CL' son champs
+     * Récupère le dernier mois en cours de traitement, met à 'CL' son champ
      * idEtat, crée une nouvelle fiche de frais avec un idEtat à 'CR' et crée
      * les lignes de frais forfait de quantités nulles
      *
@@ -729,9 +762,11 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
     
     /**
      * 
-     * @param type $idVisiteur
-     * @param type $limitNumber
-     * @return array
+     * Retourne les dernières fiches de frais d'un visiteur
+     * 
+     * @param string $idVisiteur
+     * @param number $limitNumber
+     * @return array  tableau contenant les 5 denières fiches de frais
      */
     public function getLastFichesFrais($idVisiteur, $limitNumber=5): array
     {
@@ -745,9 +780,7 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
             . 'FROM fichefrais '
             . 'INNER JOIN etat ON fichefrais.idetat = etat.id '
             . 'WHERE fichefrais.idvisiteur = :idVisiteur '   
-            . 'ORDER BY mois DESC LIMIT :limitNumber'  
-                
-                
+            . 'ORDER BY mois DESC LIMIT :limitNumber'                  
         );
         $requetePrepare->bindParam(':idVisiteur', $idVisiteur, PDO::PARAM_STR);
         $requetePrepare->bindParam(':limitNumber', $limitNumber, PDO::PARAM_INT);
@@ -814,10 +847,10 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
 
     
     /**
-     * 
-     * @param type $idVisiteur
-     * @param type $mois
-     * @param type $moisSuivant
+     * Permet de déplacer des frais refusés au mois suivant
+     * @param string $idVisiteur
+     * @param string $mois sous la forme aaaamm
+     * @param string $moisSuivant sous la forme aaaamm
      * @return void
      */
     public function deplacerFraisHorsForfaitsRefusesMoisSuivant($idVisiteur, $mois, $moisSuivant): void {
@@ -834,10 +867,10 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
     /**
      * Ajoute le fichier PDF créé à la fiche frais de l'utilisateur
      *
-     * 
      * @param String $idVisiteur
      * @param String $mois
      * @param String $fichier
+     * @return void
      */
     public function creerFichierPDF($idVisiteur, $mois, $fichier): void
     {
@@ -856,14 +889,14 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
     }
     
      /**
-     * Récupère le fichier PDF associé à une fiche frais, ou renvoie false s'il n'existe pas
+     * Vérifier si le fichier PDF associé à une fiche frais existe, ou renvoie false s'il n'existe pas
      *
      * Cette méthode est utilisée pour ne générer qu'une seule fois le PDF
      * (orientation GREEN-IT)
      * 
      * @param String $idVisiteur
      * @param String $mois
-     * @return mixed Le fichier PDF sous forme de flux ou false s'il n'existe pas
+     * @return bool vrai si PDF déjà enregistré, faux sinon
      */
     public function existeFichierPDF($idVisiteur, $mois): bool
     {
@@ -879,8 +912,19 @@ public function refuserFraisHorsForfait($idVisiteur, $idFrais, $mois): void
         $result = $requetePrepare->fetch();
         return $result["datePDF"] ? true : false;
     }
+       
     
     
+  /**
+     * Obtenir le fichier PDF associé à une fiche frais
+     *
+     * Cette méthode est utilisée pour ne générer qu'une seule fois le PDF
+     * (orientation GREEN-IT)
+     * 
+     * @param String $idVisiteur
+     * @param String $mois
+     * @return binaire correspondant au fichier PDF de la fiche de frais
+     */  
 public function getFichierPDF($idVisiteur, $mois)
     {
         $requetePrepare = $this->connexion->prepare(
